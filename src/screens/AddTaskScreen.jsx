@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {style} from './UserManagement';
 
 import {Header, TouchableOpacityTextbox} from '../shared/CommonComponent';
@@ -37,8 +30,38 @@ export function AddTaskScreen() {
   const [timeVisible, setTimeVisible] = useState(false);
   const [dateVisible, setDateVisible] = useState(false);
 
+  const [quatationVisible, setQuatationVisible] = useState(false);
+  const [quatationDate, setQuatationDate] = useState(new Date());
+  const [quationPlaceHolder,setQuatationPlaceHolder] = useState('')
+
   const [priority, setPriority] = useState('');
 
+  const raisedTimeFunction = (event, value) => {
+    setTimeVisible(false);
+    const d = new Date(value);
+    console.log(d)
+    setRaisedTime(d);
+    const hours = d.getUTCHours() < 10 ? '0' + d.getUTCHours() : d.getUTCHours();
+    const minutes = d.getUTCMinutes() < 10 ? '0' + d.getUTCMinutes() : d.getUTCMinutes();
+    setRaisedTimePlaceHolder((hours == 0 ? 12 : hours) + ':' + minutes);
+  };
+
+  const raiseDateFunction = (event, value) => {
+    setDateVisible(false);
+    setRaisedDate(value);
+    console.log(value)
+    setRaisedDatePlaceHolder(
+      value.getDate() + '/' +(value.getMonth()+1) + '/' + value.getUTCFullYear(),
+    );
+  };
+
+  const quatationDateFunction = (event, value) => {
+    setQuatationVisible(false);
+    setQuatationDate(value);
+    setQuatationPlaceHolder(
+      value.getDate() + '/' + (value.getMonth()+1) + '/' + value.getUTCFullYear(),
+    );
+  };
   return (
     <SafeAreaView style={style.Container}>
       <Header header={'Add Task'} />
@@ -99,7 +122,12 @@ export function AddTaskScreen() {
             placeHolder={'Done'}
           />
           <Text style={stylesall.fontStyle}>Approved Quatation Date</Text>
-          <TouchableOpacityTextbox />
+          <TouchableOpacityTextbox
+            onpress={() => {
+              setQuatationVisible(true);
+            }}
+            value={quationPlaceHolder}
+          />
 
           <InputTextComponent
             upperFont={stylesall.textUpper}
@@ -117,21 +145,24 @@ export function AddTaskScreen() {
       </ScrollView>
       {timeVisible && (
         <DateTimePickerComponent
-          functioning={value => {
-            setTimeVisible(false);
-          }}
+          functioning={raisedTimeFunction}
           value={raisedTime}
-          mode={'time'}
+          mode="time"
           display="clock"
         />
       )}
 
       {dateVisible && (
         <DateTimePickerComponent
-          functioning={value => {
-            setDateVisible(false);
-            console.log(value);
-          }}
+          functioning={raiseDateFunction}
+          value={raisedTime}
+          mode={'date'}
+        />
+      )}
+
+      {quatationVisible && (
+        <DateTimePickerComponent
+          functioning={quatationDateFunction}
           value={raisedTime}
           mode={'date'}
         />

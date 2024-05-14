@@ -34,6 +34,7 @@ export function FilterPage() {
       setModalVisible(false);
     }
     setFromDate(value);
+    console.log(value)
     setFromValue(
       value.getDate() +
         '/' +

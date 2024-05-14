@@ -60,7 +60,7 @@ export function TaskPage() {
         <TouchableOpacity style={styles.download}>
           <Download />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.download, {right: 7}]}>
+        <TouchableOpacity onPress={()=>{navigation.navigate('advFilter')}} style={[styles.download, {right: 7}]}>
           <Filter />
         </TouchableOpacity>
       </View>
@@ -75,12 +75,13 @@ export function TaskPage() {
                 status={item.status}
                 Date={item.date}
                 Place={item.place}
+                Function={()=>navigation.navigate('editTask')}
               />
             );
           })}
         </View>
       </ScrollView>
-      <TouchableOpacity onPress={()=>navigation.navigate("addTask")} style={[style.addButton, {bottom: 40}]}>
+      <TouchableOpacity onPress={()=>navigation.navigate("addTask")} style={[style.addButton, {bottom: 70}]}>
         <Vector style={{position: 'relative', top: 17, left: 18}} />
       </TouchableOpacity>
     </SafeAreaView>

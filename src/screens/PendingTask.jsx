@@ -2,17 +2,13 @@ import React from 'react';
 import {SafeAreaView, ScrollView, Text, View} from 'react-native';
 import {style} from './UserManagement';
 
-import {BoxView} from '../shared/CommonComponent';
+import {BoxView, Header} from '../shared/CommonComponent';
 import {styles} from './TaskPage';
 
 export function PendingTask() {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{backgroundColor: 'white'}}>
-        <Text style={[style.header, {marginLeft: 28, margin: 5}]}>
-          Pending Task
-        </Text>
-      </View>
+      <Header header={"Pending Task"}/>
       <ScrollView style={{backgroundColor: '#F2F4FF'}}>
         <View style={styles.view}>
           <BoxView

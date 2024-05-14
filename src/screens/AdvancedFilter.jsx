@@ -17,8 +17,11 @@ import {ButtonComponent} from '../shared/ButtonComponent';
 import {TouchableOpacityTextbox} from '../shared/CommonComponent';
 import {DateTimePickerComponent} from '../shared/DateTimePicker';
 import {DropDownComponent} from '../shared/DropDownComponenet';
+import { useNavigation } from '@react-navigation/native';
 
 export function AdvancedFilter() {
+
+  const navigation = useNavigation();
   const [toValue, setToValue] = useState('To');
   const [fromValue, setFromValue] = useState('From');
   const [fromDate, setFromDate] = useState(new Date());
@@ -59,6 +62,8 @@ export function AdvancedFilter() {
   };
 
   const onDateChangeTo = (event, value) => {
+
+  
     if (Platform.OS === 'android') {
       setModalVisibleTo(false);
     }
@@ -79,7 +84,7 @@ export function AdvancedFilter() {
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.goBack()}>
           <Arrow style={{marginTop: 10, left: 10}} />
         </TouchableOpacity>
         <Text

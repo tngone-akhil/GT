@@ -94,7 +94,7 @@ export function HomePage() {
             <Adduser style={style.svg} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[style.onerow, {backgroundColor: '#F3EDFF'}]}>
+        <TouchableOpacity  onPress={()=> navigation.navigate('Task')} style={[style.onerow, {backgroundColor: '#F3EDFF'}]}>
           <View>
             <Text style={style.boxText}>Total Task</Text>
             <RoundView color={'#7000FE'} />
@@ -102,7 +102,7 @@ export function HomePage() {
             <Document style={style.svg} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[style.onerow, {backgroundColor: '#FFF8E8'}]}>
+        <TouchableOpacity onPress={()=> navigation.navigate('pendingTask')} style={[style.onerow, {backgroundColor: '#FFF8E8'}]}>
           <View>
             <Text style={style.boxText}>Pending Task</Text>
             <RoundView color={'#F0AD00'} />
@@ -110,7 +110,7 @@ export function HomePage() {
             <Upload style={style.svg} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={[style.onerow, {backgroundColor: '#E8FAF2'}]}>
+        <TouchableOpacity onPress={()=> navigation.navigate('completedTask')} style={[style.onerow, {backgroundColor: '#E8FAF2'}]}>
           <View>
             <Text style={style.boxText}>Completed Task</Text>
             <RoundView color={'#10B559'} />
