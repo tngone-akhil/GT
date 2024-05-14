@@ -13,6 +13,7 @@ import {InputTextComponent} from '../shared/InputTextComponent';
 import {stylesall} from './AddTaskScreen';
 import {ButtonComponent} from '../shared/ButtonComponent';
 import {DropDownComponent} from '../shared/DropDownComponenet';
+import { useNavigation } from '@react-navigation/native';
 
 const roles = [
   {label: 'Admin', value: 'admin'},
@@ -20,6 +21,8 @@ const roles = [
 ];
 
 export function AddUser() {
+
+  const navigation = useNavigation()
   const [locationOn, setLocationOn] = useState(true);
   const [headQuaterOn, setHeadQuaterOn] = useState(false);
 

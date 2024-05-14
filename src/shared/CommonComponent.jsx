@@ -125,7 +125,7 @@ function TouchableOpacityTextbox({onpress, value, isClock = false}) {
 }
 
 function Header({header}) {
-  const naviagtion = useNavigation();
+  const navigation = useNavigation();
   return (
     <View
       style={{
@@ -133,7 +133,7 @@ function Header({header}) {
         justifyContent: 'space-between',
         flexDirection: 'row',
       }}>
-      <TouchableOpacity onpress={() => naviagtion.goBack}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <Arrow style={{marginTop: 10, left: 10}} />
       </TouchableOpacity>
       <Text style={[style.Header, {top: -5}]}>{header}</Text>

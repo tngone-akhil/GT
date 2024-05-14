@@ -13,6 +13,7 @@ import Filter from '../images/svg/FilterBlack';
 import Vector from '../images/svg/Vector';
 
 import {BoxView} from '../shared/CommonComponent';
+import { useNavigation } from '@react-navigation/native';
 let data = [
   {
     header: 'candidate Management',
@@ -51,10 +52,11 @@ let data = [
   },
 ];
 export function TaskPage() {
+  const navigation = useNavigation()
   return (
     <SafeAreaView style={styles.container}>
       <View style={{paddingBottom: 15}}>
-        <Text style={[style.header, {marginLeft: 10}]}>Task Management</Text>
+        <Text style={[style.header]}>Task Management</Text>
         <TouchableOpacity style={styles.download}>
           <Download />
         </TouchableOpacity>
@@ -78,7 +80,7 @@ export function TaskPage() {
           })}
         </View>
       </ScrollView>
-      <TouchableOpacity style={[style.addButton, {bottom: 40}]}>
+      <TouchableOpacity onPress={()=>navigation.navigate("addTask")} style={[style.addButton, {bottom: 40}]}>
         <Vector style={{position: 'relative', top: 17, left: 18}} />
       </TouchableOpacity>
     </SafeAreaView>

@@ -10,18 +10,17 @@ import {
   View,
 } from 'react-native';
 
-
 import {style} from './UserManagement';
 import Arrow from '../images/svg/arrow';
 import {InputTextComponent} from '../shared/InputTextComponent';
 import {ButtonComponent} from '../shared/ButtonComponent';
 import {TouchableOpacityTextbox} from '../shared/CommonComponent';
 import {DateTimePickerComponent} from '../shared/DateTimePicker';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 export function FilterPage() {
+  const navigation = useNavigation();
 
-  const navigation = useNavigation()
   const [toValue, setToValue] = useState('To');
   const [fromValue, setFromValue] = useState('From');
 
@@ -65,7 +64,7 @@ export function FilterPage() {
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
-        <TouchableOpacity onpress={()=>navigation.goBack()}>
+        <TouchableOpacity onPress={() => {navigation.goBack()}}>
           <Arrow style={{marginTop: 10, left: 10}} />
         </TouchableOpacity>
         <Text
@@ -105,18 +104,18 @@ export function FilterPage() {
             }}
           />
         </View>
-
-        <InputTextComponent
-          TextUpper={'Location'}
-          placeHolder={'Enter Location'}
-          upperStyle={styles.upperText}
-          upperFont={{fontWeight: '500', fontSize: 16}}
-        />
-        <ButtonComponent
-          title={'Apply'}
-          buttonStyle={styles.button}
-          textStyle={styles.textLogin}
-        />
+        <View style={{marginTop:10}}>
+          <InputTextComponent
+            TextUpper={'Location'}
+            placeHolder={'Enter Location'}
+            upperFont={{fontWeight: '500',marginLeft:10, fontSize: 16}}
+          />
+          <ButtonComponent
+            title={'Apply'}
+            buttonStyle={styles.button}
+            textStyle={styles.textLogin}
+          />
+        </View>
       </ScrollView>
 
       {modalVisible && (
@@ -170,6 +169,6 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
   upperText: {
-    marginLeft: 10,
+    paddingLeft:10
   },
 });

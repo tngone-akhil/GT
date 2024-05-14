@@ -39,7 +39,7 @@ const HomeNavigator = () => {
         backgroundColor={isDarkMode ? 'black' : 'white'}
         barStyle={isDarkMode ? 'dark-content' : 'light-content'}
       />
-      <Stack.Navigator initialRouteName="addUser">
+      <Stack.Navigator initialRouteName="logedPage">
         <Stack.Screen
           name="welcome"
           component={WelcomePage}
