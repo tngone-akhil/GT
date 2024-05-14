@@ -68,6 +68,7 @@ export function TaskPage() {
         <View style={styles.view}>
           {data.map((item, index) => {
             return (
+            
               <BoxView
                 key={index}
                 Header={item.header}

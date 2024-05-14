@@ -15,7 +15,8 @@ function RoundView({color}) {
 
 function BoxView({Date, Place, status, Header, Subheader,Function}) {
   return (
-    <View style={style.boxMainView}>
+    
+    <TouchableOpacity style={style.boxMainView}>
       <View style={style.boxInnerTopView}>
         <View style={{margin: 20}}>
           <Text style={{color: 'black', fontSize: 15, marginVertical: 3}}>
@@ -56,7 +57,8 @@ function BoxView({Date, Place, status, Header, Subheader,Function}) {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
+   
   );
 }
 

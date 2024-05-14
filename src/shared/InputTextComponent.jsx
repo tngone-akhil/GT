@@ -48,6 +48,8 @@ export const InputTextComponent = ({
           secureTextEntry={textVisible}
           textAlignVertical={multiLine ? 'top' : 'center'}
           blurOnSubmit={true}
+          placeholderTextColor={'black'}
+          
         />
         {isPassword && (
           <TouchableOpacity

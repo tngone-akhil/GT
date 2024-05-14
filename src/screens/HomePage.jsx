@@ -119,6 +119,7 @@ export function HomePage() {
           </View>
         </TouchableOpacity>
       </View>
+     
     </SafeAreaView>
   );
 }
