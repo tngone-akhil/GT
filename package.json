@@ -15,9 +15,11 @@
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
-    "encrypt-storage": "^2.12.22",
+    "axios": "^1.6.8",
+    "encrypt-storage": "^2.13.2",
+    "message": "^0.0.1",
     "react": "18.2.0",
-    "react-native": "^0.73.4",
+    "react-native": "^0.73.8",
     "react-native-background-timer": "^2.4.1",
     "react-native-date-picker": "^5.0.2",
     "react-native-encrypted-storage": "^4.0.3",
@@ -29,7 +31,9 @@
     "react-native-screens": "^3.29.0",
     "react-native-svg": "^14.1.0",
     "react-native-svg-transformer": "^1.3.0",
-    "rn-otp-timer": "^1.0.1"
+    "react-native-toast-message": "^2.2.0",
+    "rn-otp-timer": "^1.0.1",
+    "toast": "^0.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

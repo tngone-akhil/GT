@@ -1,15 +1,14 @@
-import React from "react"
-import { RootNavigation } from "./src/navigations/RootNavigation"
-import { AppThemeProvider } from "./src/context/ThemeContext"
-import { DataContext } from "./src/context/DataContext"
+import React from 'react';
+import {RootNavigation} from './src/navigations/RootNavigation';
+import {AppThemeProvider} from './src/context/ThemeContext';
+import {AuthProvider} from './src/context/AuthContext';
 
-export default function App(){
-  return(
+export default function App() {
+  return (
     <AppThemeProvider>
-      <DataContext>
-       <RootNavigation/>
-       </DataContext>
+      <AuthProvider>
+        <RootNavigation />
+      </AuthProvider>
     </AppThemeProvider>
-   
-  )
+  );
 }

@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { InputTextComponent } from "../shared/InputTextComponent";
 import { ButtonComponent } from "../shared/ButtonComponent";
 import { commonStyles } from "../utlis/helpers";
-import { useData } from "../context/DataContext";
+
 
 export function ChangePassword(){
     const {password, setPassword} = useData('');

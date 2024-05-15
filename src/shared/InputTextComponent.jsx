@@ -19,9 +19,10 @@ export const InputTextComponent = ({
   isEditable = true,
   multiLine = false,
   isPassword = false,
+  errorComponent = false
 }) => {
-  const [eyeVisible, setEyeVisible] = useState(false);
-  const [textVisible, setTextVisible] = useState(true);
+  const [eyeVisible, setEyeVisible] = useState(true);
+  const [textVisible, setTextVisible] = useState(false);
 
   const toggle = () => {
     setEyeVisible(!eyeVisible);
@@ -38,11 +39,12 @@ export const InputTextComponent = ({
             {
               backgroundColor: !isEditable ? '#ECECEC' : 'white',
               height: multiLine ? 100 : 45,
+              borderColor:!errorComponent ? '#808080':'red',
             },
           ]}
           placeholder={placeHolder}
           value={value}
-          onChange={onchange}
+          onChangeText={value => onchange(value)}
           editable={isEditable}
           multiline={multiLine}
           secureTextEntry={textVisible}
@@ -59,13 +61,14 @@ export const InputTextComponent = ({
           </TouchableOpacity>
         )}
       </View>
+     {errorComponent && <Text style={{position:'absolute', top:15,left:5,color:'red'}}>enter a valid Credential</Text>}
     </View>
   );
 };
 
 const style = StyleSheet.create({
   textbox: {
-    borderColor: '#808080',
+    
     borderWidth: 1,
     borderRadius: 10,
     width: '96%',

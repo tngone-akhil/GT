@@ -1,39 +1,61 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { SECURE_STORAGE_KEYS } from './constants';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { StyleSheet } from 'react-native';
 
-async function retrieveAppTheme() {
-    try{
-        await EncryptedStorage.getItem(SECURE_STORAGE_KEYS.APP_THEME)
-    }catch(error){
-        return Promise.reject(error)
-    }
-    
+
+async function storeUserSession({user}) {
+  try {
+    await EncryptedStorage.setItem(
+      SECURE_STORAGE_KEYS.USER_SESSION,
+      JSON.stringify(user),
+    );
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
 
+async function retrieveUserSession() {
+  try {
+    const session = await EncryptedStorage.getItem(
+      SECURE_STORAGE_KEYS.USER_SESSION,
+    );
+    if (session) {
+      return JSON.parse(session);
+    } else {
+      return BASE_USER;
+    }
+  } catch {
+    return BASE_USER;
+  }
+}
 
-export const useTogglePasswordVisibility = () => {
-    const [passwordVisibility, setPasswordVisibility] = useState(true);
-    const [rightIcon, setRightIcon] = useState(true);
-  
-    const handlePasswordVisibility = () => {
-      if (rightIcon) {
-        setRightIcon(false);
-        setPasswordVisibility(true);
-      } else {
-        setRightIcon(true);
-        setPasswordVisibility(true);
-      }
-    };
-  
-    return {
-      passwordVisibility,
-      rightIcon,
-      handlePasswordVisibility,
-    };
-  };
+async function retrieveAppTheme(mode) {
+  try {
+    await EncryptedStorage.getItem(SECURE_STORAGE_KEYS.APP_THEME, mode);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+// async function retrieveAppTheme(setIsDarkMode) {
+//   try {
+//     let mode =
+//       (await EncryptedStorage.getItem(SECURE_STORAGE_KEYS.APP_THEME)) ?? 'dark';
+//     setIsDarkMode(mode === 'dark' || mode === null);
+//   } catch (ex) {
+//     setIsDarkMode(true);
+//   }
+// }
+async function removeUserSession() {
+  try {
+    await EncryptedStorage.removeItem(SECURE_STORAGE_KEYS.USER_SESSION);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
 
 const commonStyles = StyleSheet.create({
   button: {
@@ -51,4 +73,4 @@ const commonStyles = StyleSheet.create({
     fontSize : 20
   },
 })
-export {retrieveAppTheme,commonStyles}
+export {retrieveAppTheme,commonStyles,removeUserSession,retrieveUserSession,storeUserSession}

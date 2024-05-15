@@ -2,7 +2,9 @@ export  const BASE_USER = {
   userId : '',
   accessToken: '',
   refreshToken: '',
-  role: ''
+  role: '',
+  username :'',
+  email:''
 };
 
 export const SECURE_STORAGE_KEYS = {

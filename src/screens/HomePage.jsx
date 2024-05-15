@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -18,9 +18,64 @@ import Upload from '../images/svg/Upload';
 import Adduser from '../images/svg/adduser';
 import ThreeUser from '../images/svg/threeuser';
 import {useNavigation} from '@react-navigation/native';
+import {BUSINESS_ENDPOINTS} from '../services/constants';
+import useAxiosPrivate from '../hooks/useAxios';
 
 export function HomePage() {
   const navigation = useNavigation();
+  const axiosIntercepted = useAxiosPrivate();
+
+  const [adminCount,setAdminCount] = useState(0)
+  const [clientCount,setClientCount] = useState(0)
+  const [completedTaskCount,setCompletedTaskCount] = useState(0)
+  const [pendingTaskCount,setPendingTaskCountt] = useState(0)
+  const [totalTaskCount,setTotalTaskCount] = useState(0)
+  const [totalUserCount,setTotalUserCount] = useState(0)
+
+  useEffect(() => {
+    getKeyPairValues();
+  }, []);
+
+  const getKeyPairValues = async () => {
+    // setRefreshing(true);
+    try {
+      const URL = BUSINESS_ENDPOINTS.GETKEYVALUE;
+      const BODY = JSON.stringify({
+        toDate: "0001-01-01",
+        fromDate: "0001-01-01",
+        location: "",
+
+      });
+      
+
+      const response = await axiosIntercepted.post(URL, BODY);
+      const results = response.data;
+      setAdminCount(results.adminCount)
+      setClientCount(results.clientCount)
+      setCompletedTaskCount(results.completedTaskCount)
+      setPendingTaskCountt(results.pendingTaskCount)
+      setTotalTaskCount(results.totalTaskCount)
+      setTotalUserCount(results.totalUserCount)
+
+      // generalHelpers.fetchLookups();
+      // generalHelpers.storeToken(results.userId);
+      // NEW_USER.isHeadQuarters = results.isHeadQuarters;
+    } catch (err) {
+      console.log(err);
+      // setRefreshing(false);
+      // Toast.show({
+      //   visibilityTime: 2000,
+      //   bottomOffset: 40,
+      //   position: 'bottom',
+      //   type: 'error',
+      //   text1: ApiErrorTexts.oops,
+      //   text2: ApiErrorTexts.something,
+      // });
+    } finally {
+      // setRefreshing(false);
+    }
+  };
+
   return (
     <SafeAreaView style={style.container}>
       <View style={style.back}>
@@ -74,14 +129,14 @@ export function HomePage() {
           <View>
             <Text style={style.boxText}>Total User</Text>
             <RoundView color={'#2051E5'} />
-            <Text style={[style.insideboxtext, {color: '#2051E5'}]}>10</Text>
+            <Text style={[style.insideboxtext, {color: '#2051E5'}]}>{totalUserCount}</Text>
             <ThreeUser style={[style.svg, {top: 76}]} />
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={[style.onerow, {backgroundColor: '#FEF1F1'}]}>
           <View>
             <Text style={style.boxText}>Total Client</Text>
-            <Text style={[style.insideboxtext, {color: '#FF4B4B'}]}>10</Text>
+            <Text style={[style.insideboxtext, {color: '#FF4B4B'}]}>{clientCount}</Text>
             <RoundView color={'#FF4B4B'} />
             <Friend style={style.svg} />
           </View>
@@ -90,36 +145,41 @@ export function HomePage() {
           <View>
             <Text style={style.boxText}>Total Admin</Text>
             <RoundView color={'#AD6510'} />
-            <Text style={[style.insideboxtext, {color: '#AD6510'}]}>10</Text>
+            <Text style={[style.insideboxtext, {color: '#AD6510'}]}>{adminCount}</Text>
             <Adduser style={style.svg} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity  onPress={()=> navigation.navigate('Task')} style={[style.onerow, {backgroundColor: '#F3EDFF'}]}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Task')}
+          style={[style.onerow, {backgroundColor: '#F3EDFF'}]}>
           <View>
             <Text style={style.boxText}>Total Task</Text>
             <RoundView color={'#7000FE'} />
-            <Text style={[style.insideboxtext, {color: '#7000FE'}]}>10</Text>
+            <Text style={[style.insideboxtext, {color: '#7000FE'}]}>{totalTaskCount}</Text>
             <Document style={style.svg} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=> navigation.navigate('pendingTask')} style={[style.onerow, {backgroundColor: '#FFF8E8'}]}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('pendingTask')}
+          style={[style.onerow, {backgroundColor: '#FFF8E8'}]}>
           <View>
             <Text style={style.boxText}>Pending Task</Text>
             <RoundView color={'#F0AD00'} />
-            <Text style={[style.insideboxtext, {color: '#F0AD00'}]}>10</Text>
+            <Text style={[style.insideboxtext, {color: '#F0AD00'}]}>{pendingTaskCount}</Text>
             <Upload style={style.svg} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=> navigation.navigate('completedTask')} style={[style.onerow, {backgroundColor: '#E8FAF2'}]}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('completedTask')}
+          style={[style.onerow, {backgroundColor: '#E8FAF2'}]}>
           <View>
             <Text style={style.boxText}>Completed Task</Text>
             <RoundView color={'#10B559'} />
-            <Text style={[style.insideboxtext, {color: '#10B559'}]}>10</Text>
+            <Text style={[style.insideboxtext, {color: '#10B559'}]}>{completedTaskCount}</Text>
             <TickSquare style={[style.svg, {right: 23}]} />
           </View>
         </TouchableOpacity>
       </View>
-     
     </SafeAreaView>
   );
 }

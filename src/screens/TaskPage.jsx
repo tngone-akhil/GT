@@ -67,8 +67,7 @@ export function TaskPage() {
       <ScrollView style={{backgroundColor: '#F2F4FF'}}>
         <View style={styles.view}>
           {data.map((item, index) => {
-            return (
-            
+            return (            
               <BoxView
                 key={index}
                 Header={item.header}

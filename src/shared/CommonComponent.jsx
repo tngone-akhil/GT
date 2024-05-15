@@ -25,7 +25,7 @@ function BoxView({Date, Place, status, Header, Subheader,Function}) {
           <Text style={{color: 'black'}}>{Subheader}</Text>
         </View>
         <View style={{margin: 25}}>
-          <Text style={{color: status == 'pending' ? 'orange' : 'green'}}>
+          <Text style={{color: status == 'PENDING' ? 'orange' : 'green'}}>
             {status}
           </Text>
         </View>

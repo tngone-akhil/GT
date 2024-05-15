@@ -11,10 +11,9 @@ import {
 } from 'react-native';
 import OTPTextInput from 'react-native-otp-textinput';
 
-import RnOtpTimer from 'rn-otp-timer';
 
 import {ButtonComponent} from '../shared/ButtonComponent';
-import {InputTextComponent} from '../shared/InputTextComponent';
+
 
 export function OtpVerification() {
   let OtpInput = useRef(null);

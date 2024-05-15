@@ -39,7 +39,6 @@ export function AddTaskScreen() {
   const raisedTimeFunction = (event, value) => {
     setTimeVisible(false);
     const d = new Date(value);
-    console.log(d)
     setRaisedTime(d);
     const hours = d.getUTCHours() < 10 ? '0' + d.getUTCHours() : d.getUTCHours();
     const minutes = d.getUTCMinutes() < 10 ? '0' + d.getUTCMinutes() : d.getUTCMinutes();
@@ -49,7 +48,6 @@ export function AddTaskScreen() {
   const raiseDateFunction = (event, value) => {
     setDateVisible(false);
     setRaisedDate(value);
-    console.log(value)
     setRaisedDatePlaceHolder(
       value.getDate() + '/' +(value.getMonth()+1) + '/' + value.getUTCFullYear(),
     );
