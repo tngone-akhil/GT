@@ -38,9 +38,9 @@ export function OtpVerification() {
         code: otp
       }) 
       const response = await axiosBase.post(URL,BODY)
-      console.log(response.data)
+      const result = response.data
       setLoader(false)
-      navigation.navigate('changepassword',{userId:response.userId})
+      navigation.navigate('changepassword',{userId:result.userId})
     }catch(err){
       console.log(err)
     }
@@ -50,6 +50,12 @@ export function OtpVerification() {
   function resend(){
     setminutes(1);
     setSeconds(59)
+    resendOtp()
+
+  }
+  const resendOtp = async() =>{
+    const URL = AUTH_ENDPOINTS.FORGET_REQUEST + `?email=${Email}`;
+    const response = await axiosBase.get(URL);
   }
 
   useEffect(() => {

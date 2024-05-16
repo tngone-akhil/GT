@@ -12,31 +12,39 @@ import Vector from '../images/svg/Vector';
 import {Loader, UserBox} from '../shared/CommonComponent';
 import {BUSINESS_ENDPOINTS} from '../services/constants';
 import {axiosIntercepted} from '../services';
+import {useNavigation} from '@react-navigation/native';
 
 export function UserManagement() {
+  const navigation = useNavigation();
   const [users, setUsers] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [loading,setLoading] = useState(false)
+  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    userList();
+    userList(true);
   }, []);
 
   const refreshPage = () => {
     setPageNumber(pageNumber + 1);
-    userList();
+    userList(false);
   };
 
-  const userList = async () => {
+  const userList = async (isLoad = true) => {
     try {
+      const pageNo = isLoad ? pageNumber : pageNumber + 1;
+      setPageNumber(pageNo);
+      setLoading(true);
+      console.log(pageNumber);
       const URL = BUSINESS_ENDPOINTS.GETALLUSER;
       const BODY = JSON.stringify({
-        pageNumber: pageNumber,
+        pageNumber: pageNo,
         rowsPerPage: rowsPerPage,
       });
+      console.log(BODY)
       const response = await axiosIntercepted.post(URL, BODY);
       setUsers(users.concat(response.data.users));
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -59,10 +67,12 @@ export function UserManagement() {
 
   return (
     <SafeAreaView style={style.Container}>
-      {loading && <Loader/>}
+      {loading && <Loader style={{top: '10%'}} />}
       <View style={{height: 65}}>
         <Text style={style.header}>User Management</Text>
-        <TouchableOpacity style={style.addButton}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('addUser')}
+          style={style.addButton}>
           <Vector style={{position: 'absolute', top: 16, right: 17}} />
         </TouchableOpacity>
       </View>

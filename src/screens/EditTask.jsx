@@ -14,6 +14,7 @@ import {InputTextComponent} from '../shared/InputTextComponent';
 import {DateTimePickerComponent} from '../shared/DateTimePicker';
 import {DropDownComponent} from '../shared/DropDownComponenet';
 import {ButtonComponent} from '../shared/ButtonComponent';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 let Status = [
   {label: 'Pending', value: 'PENDING'},
@@ -47,6 +48,19 @@ export function EditTaskScreen() {
 
   const [priority, setPriority] = useState('');
 
+  const navigation = useNavigation()
+  const route = useRoute()
+
+  const{taskId} = route.params
+
+
+  const getTaskDetails = async() =>{
+    try{
+      const URL = '';
+    }catch(err){
+      console.log(err)
+    }
+  }
   return (
     <SafeAreaView style={style.Container}>
       <Header header={'Edit Task'} />
@@ -153,6 +167,7 @@ export function EditTaskScreen() {
 
           <ButtonComponent
             textStyle={styles.textLogin}
+            onPresscomponent={()=>console.log(taskId)}
             buttonStyle={styles.button}
             title={'Save'}
           />

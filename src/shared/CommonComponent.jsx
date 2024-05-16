@@ -13,9 +13,9 @@ function RoundView({color}) {
   return <View style={[style.round, {backgroundColor: color}]}></View>;
 }
 
-function BoxView({Date, Place, status, Header, Subheader, Function}) {
+function BoxView({Date, Place, status, Header, Subheader, Function,navig}) {
   return (
-    <TouchableOpacity style={style.boxMainView}>
+    <TouchableOpacity  onPress={navig} style={style.boxMainView}>
       <View style={style.boxInnerTopView}>
         <View style={{margin: 20}}>
           <Text style={{color: 'black', fontSize: 15, marginVertical: 3}}>
@@ -178,9 +178,9 @@ function RemarkBox({message, name, dateAndTime}) {
   );
 }
 
-function Loader() {
+function Loader({style}) {
   return (
-    <View style={{position: 'absolute', top: '50%', zIndex: 1, left: '48%'}}>
+    <View style={[{position: 'absolute', top: '50%', zIndex: 1, left: '48%'},style]}>
       <ActivityIndicator size={'large'} />
     </View>
   );

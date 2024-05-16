@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  FlatList,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -12,61 +13,83 @@ import Download from '../images/svg/Download';
 import Filter from '../images/svg/FilterBlack';
 import Vector from '../images/svg/Vector';
 
-import {BoxView} from '../shared/CommonComponent';
-import { useNavigation } from '@react-navigation/native';
-let data = [
-  {
-    header: 'candidate Management',
-    Subheader: 'For - Zoho Project',
-    status: 'completed',
-    date: 'June 27, 2022',
-    place: 'canada',
-  },
-  {
-    header: 'candidate Management',
-    Subheader: 'For - Zoho Project',
-    status: 'completed',
-    date: 'June 27, 2022',
-    place: 'canada',
-  },
-  {
-    header: 'candidate Management',
-    Subheader: 'For - Zoho Project',
-    status: 'pending',
-    date: 'June 27, 2022',
-    place: 'canada',
-  },
-  {
-    header: 'candidate Management',
-    Subheader: 'For - Zoho Project',
-    status: 'completed',
-    date: 'June 27, 2022',
-    place: 'canada',
-  },
-  {
-    header: 'candidate Management',
-    Subheader: 'For - Zoho Project',
-    status: 'pending',
-    date: 'June 27, 2022',
-    place: 'canada',
-  },
-];
+import {BoxView, Loader} from '../shared/CommonComponent';
+import {useNavigation} from '@react-navigation/native';
+import {BUSINESS_ENDPOINTS} from '../services/constants';
+import { axiosIntercepted } from '../services';
+
 export function TaskPage() {
-  const navigation = useNavigation()
+  const [data, setData] = useState([]);
+  const [loader, setLoader] = useState(false);
+
+  useEffect(() => {
+    GetAllTask();
+  }, []);
+
+
+  const renderItem = data => {
+    const res = data.item;
+    return (
+      <View style={styles.view}>
+        <BoxView
+         navig={()=>navigation.navigate('viewTask',{taskId:res.taskId})}
+          Header={res.concept}
+          Subheader={res.maintenanceWork}
+          status={res.status}
+          Date={res.approvedQuotationDate}
+          Place={res.location}
+          Function={() => navigation.navigate('editTask',{taskId:res.taskId})}
+        />
+      </View>
+    );
+  };
+
+  const GetAllTask = async () => {
+    try {
+      setLoader(true);
+      const URL = BUSINESS_ENDPOINTS.GETALLTASK;
+      const BODY = JSON.stringify(
+        {
+          concept: "",
+          location: "",
+          poc: "",
+          responsibility: "",
+          status: "",
+          priority: "",
+          toDate: "0001-01-01",
+          fromDate: "0001-01-01"
+        }
+      )
+      const response = await axiosIntercepted.post(URL,BODY);
+      const result = response.data;
+      setData(result);
+      setLoader(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
+      {loader && <Loader/>}
       <View style={{paddingBottom: 15}}>
         <Text style={[style.header]}>Task Management</Text>
         <TouchableOpacity style={styles.download}>
           <Download />
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>{navigation.navigate('advFilter')}} style={[styles.download, {right: 7}]}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('advFilter');
+          }}
+          style={[styles.download, {right: 7}]}>
           <Filter />
         </TouchableOpacity>
       </View>
-      <ScrollView style={{backgroundColor: '#F2F4FF'}}>
-        <View style={styles.view}>
-          {data.map((item, index) => {
+      {/* <ScrollView style={{backgroundColor: '#F2F4FF'}}> */}
+        {/* <View style={styles.view}> */}
+          <FlatList style={{backgroundColor: '#F2F4FF'}} data={data} renderItem={renderItem} />
+          {/* {data.map((item, index) => {
             return (            
               <BoxView
                 key={index}
@@ -78,10 +101,12 @@ export function TaskPage() {
                 Function={()=>navigation.navigate('editTask')}
               />
             );
-          })}
-        </View>
-      </ScrollView>
-      <TouchableOpacity onPress={()=>navigation.navigate("addTask")} style={[style.addButton, {bottom: 70}]}>
+          })} */}
+        {/* </View> */}
+      {/* </ScrollView> */}
+      <TouchableOpacity
+        onPress={() => navigation.navigate('addTask')}
+        style={[style.addButton, {bottom: 70}]}>
         <Vector style={{position: 'relative', top: 17, left: 18}} />
       </TouchableOpacity>
     </SafeAreaView>
