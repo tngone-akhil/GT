@@ -13,13 +13,39 @@ import OTPTextInput from 'react-native-otp-textinput';
 
 
 import {ButtonComponent} from '../shared/ButtonComponent';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { AUTH_ENDPOINTS } from '../services/constants';
+import { axiosBase, axiosIntercepted } from '../services';
+import { Loader } from '../shared/CommonComponent';
 
 
 export function OtpVerification() {
-  let OtpInput = useRef(null);
+  const navigation = useNavigation()
+  const route = useRoute()
   const [otp, setOtp] = useState('');
   const [minutes, setminutes] = useState(1);
   const [seconds, setSeconds] = useState(59);
+  const [loader,setLoader] = useState(false)
+  const{Email} = route.params
+
+
+  const Send = async() =>{
+    try{
+      setLoader(true)
+      const URL = AUTH_ENDPOINTS.VERIFY_OTP
+      const BODY = JSON.stringify({
+        email: Email,
+        code: otp
+      }) 
+      const response = await axiosBase.post(URL,BODY)
+      console.log(response.data)
+      setLoader(false)
+      navigation.navigate('changepassword',{userId:response.userId})
+    }catch(err){
+      console.log(err)
+    }
+
+  }
 
   function resend(){
     setminutes(1);
@@ -44,6 +70,7 @@ export function OtpVerification() {
       style={{flex: 1, backgroundColor: 'white'}}
       keyboardVerticalOffset={Platform.OS == 'ios' ? 50 : 8}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        {loader && <Loader/>}
       <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
         <View>
           <ScrollView>
@@ -96,6 +123,7 @@ export function OtpVerification() {
               </Text>
               <ButtonComponent
                 title={'Sent'}
+                onPresscomponent={Send}
                 buttonStyle={styles.button}
                 textStyle={styles.textInButton}
               />

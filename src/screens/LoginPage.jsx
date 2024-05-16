@@ -18,10 +18,11 @@ import {axiosBase} from '../services';
 import {useAuth} from '../context/AuthContext';
 import {useNavigation} from '@react-navigation/native';
 import {storeUserSession} from '../utlis/helpers';
+import { Loader } from '../shared/CommonComponent';
 
 export function LoginPage() {
   const navigation = useNavigation();
-  const [refreshing, setRefreshing] = useState(false);
+  const [loader,setLoader] = useState(false)
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState('');
@@ -44,6 +45,7 @@ export function LoginPage() {
   const authenticateUser = async () => {
     // setRefreshing(true);
     try {
+      setLoader(true)
       const URL = AUTH_ENDPOINTS.AUTHENTICATE_USER;
       const BODY = JSON.stringify({
         email: email,
@@ -68,6 +70,7 @@ export function LoginPage() {
       setAuth(prev => {
         return {...prev, ...NEW_USER};
       });
+      setLoader(false)
     } catch (err) {
       console.log(err);
       // setRefreshing(false);
@@ -86,6 +89,7 @@ export function LoginPage() {
 
   return (
     <SafeAreaView style={[styles.container,{}]}>
+     {loader && <Loader/>}
       <ScrollView>
         <KeyboardAvoidingView behavior="position">
           <Image

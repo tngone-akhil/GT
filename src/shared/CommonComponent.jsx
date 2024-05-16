@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import Calender from '../images/svg/Calendar';
 import Location from '../images/svg/Location';
@@ -13,9 +13,8 @@ function RoundView({color}) {
   return <View style={[style.round, {backgroundColor: color}]}></View>;
 }
 
-function BoxView({Date, Place, status, Header, Subheader,Function}) {
+function BoxView({Date, Place, status, Header, Subheader, Function}) {
   return (
-    
     <TouchableOpacity style={style.boxMainView}>
       <View style={style.boxInnerTopView}>
         <View style={{margin: 20}}>
@@ -52,13 +51,14 @@ function BoxView({Date, Place, status, Header, Subheader,Function}) {
           </View>
         </View>
         <View>
-          <TouchableOpacity onPress={Function} style={{marginRight: 15, marginTop: 20}}>
+          <TouchableOpacity
+            onPress={Function}
+            style={{marginRight: 15, marginTop: 20}}>
             <Edit />
           </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
-   
   );
 }
 
@@ -144,7 +144,7 @@ function Header({header}) {
   );
 }
 
-function RemarkBox({message,name,dateAndTime}) {
+function RemarkBox({message, name, dateAndTime}) {
   return (
     <View
       style={{
@@ -174,6 +174,14 @@ function RemarkBox({message,name,dateAndTime}) {
         <Text style={{margin: 7}}>{name}</Text>
         <Text style={{margin: 7}}>{dateAndTime}</Text>
       </View>
+    </View>
+  );
+}
+
+function Loader() {
+  return (
+    <View style={{position: 'absolute', top: '50%', zIndex: 1, left: '48%'}}>
+      <ActivityIndicator size={'large'} />
     </View>
   );
 }
@@ -292,5 +300,6 @@ export {
   NotificationBox,
   TouchableOpacityTextbox,
   Header,
-  RemarkBox
+  RemarkBox,
+  Loader
 };

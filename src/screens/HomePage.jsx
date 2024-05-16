@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Filter from '../images/svg/Filter';
 import Score from '../images/svg/score';
-import {RoundView} from '../shared/CommonComponent';
+import {Loader, RoundView} from '../shared/CommonComponent';
 import TickSquare from '../images/svg/Ticksquare';
 import Friend from '../images/svg/Friend';
 import Document from '../images/svg/docu';
@@ -24,13 +24,14 @@ import useAxiosPrivate from '../hooks/useAxios';
 export function HomePage() {
   const navigation = useNavigation();
   const axiosIntercepted = useAxiosPrivate();
-
+  const [performanceScore,setPerformanceScore] = useState(0)
   const [adminCount,setAdminCount] = useState(0)
   const [clientCount,setClientCount] = useState(0)
   const [completedTaskCount,setCompletedTaskCount] = useState(0)
   const [pendingTaskCount,setPendingTaskCountt] = useState(0)
   const [totalTaskCount,setTotalTaskCount] = useState(0)
   const [totalUserCount,setTotalUserCount] = useState(0)
+  const [loader,setLoader] = useState(false)
 
   useEffect(() => {
     getKeyPairValues();
@@ -39,6 +40,7 @@ export function HomePage() {
   const getKeyPairValues = async () => {
     // setRefreshing(true);
     try {
+      setLoader(true)
       const URL = BUSINESS_ENDPOINTS.GETKEYVALUE;
       const BODY = JSON.stringify({
         toDate: "0001-01-01",
@@ -56,7 +58,8 @@ export function HomePage() {
       setPendingTaskCountt(results.pendingTaskCount)
       setTotalTaskCount(results.totalTaskCount)
       setTotalUserCount(results.totalUserCount)
-
+      setPerformanceScore(results.performanceScore)
+      setLoader(false)
       // generalHelpers.fetchLookups();
       // generalHelpers.storeToken(results.userId);
       // NEW_USER.isHeadQuarters = results.isHeadQuarters;
@@ -78,6 +81,7 @@ export function HomePage() {
 
   return (
     <SafeAreaView style={style.container}>
+      {loader && <Loader/>}
       <View style={style.back}>
         <Text style={style.text}>Hi,Alex Turner</Text>
         <Text
@@ -108,7 +112,7 @@ export function HomePage() {
             }}>
             Performance Score
           </Text>
-          <Text style={style.scoreStyle}>28</Text>
+          <Text style={style.scoreStyle}>{performanceScore}</Text>
         </View>
 
         <Score style={{position: 'absolute', right: 30, top: 30}} />

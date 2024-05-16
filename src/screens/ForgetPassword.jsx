@@ -11,16 +11,45 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {InputTextComponent} from '../shared/InputTextComponent';
 import {ButtonComponent} from '../shared/ButtonComponent';
-
+import {AUTH_ENDPOINTS} from '../services/constants';
+import {axiosBase} from '../services';
+import {useNavigation} from '@react-navigation/native';
+import {Loader} from '../shared/CommonComponent';
 
 export function ForgetPassword() {
-  const {email, setEmail} = useData('');
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('');
+  const [loader, setLoader] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+
+  const validation = () => {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!regex.test(email)) {
+      setEmailError(true);
+    } else {
+      setEmailError(false);
+      Sent();
+    }
+  };
+
+  const Sent = async () => {
+    try {
+      setLoader(true);
+      const URL = AUTH_ENDPOINTS.FORGET_REQUEST + `?email=${email}`;
+      const response = await axiosBase.get(URL);
+      navigation.navigate('otp', {Email: email});
+      setLoader(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <KeyboardAvoidingView
       style={{flex: 1, backgroundColor: 'white'}}
       keyboardVerticalOffset={Platform.OS == 'ios' ? 50 : 8}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
+        {loader && <Loader />}
         <View>
           <ScrollView>
             <View
@@ -28,7 +57,7 @@ export function ForgetPassword() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: 400,
-                backgroundColor:'#EEF2FF'
+                backgroundColor: '#EEF2FF',
               }}>
               <Image source={require('../images/forgetPassword.png')} />
             </View>
@@ -40,12 +69,13 @@ export function ForgetPassword() {
                   fontSize: 30,
                   fontWeight: '600',
                   marginBottom: 10,
-                  width:'50%'
+                  width: '50%',
                 }}>
                 Forget your Password?
               </Text>
 
               <InputTextComponent
+                errorComponent={emailError}
                 upperFont={styles.upperText}
                 TextUpper={'E-Mail'}
                 placeHolder={'Enter your Email'}
@@ -54,6 +84,7 @@ export function ForgetPassword() {
               />
 
               <ButtonComponent
+                onPresscomponent={validation}
                 title={'Sent'}
                 buttonStyle={styles.button}
                 textStyle={styles.textInButton}
