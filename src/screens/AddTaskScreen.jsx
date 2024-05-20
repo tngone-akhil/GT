@@ -7,58 +7,112 @@ import {InputTextComponent} from '../shared/InputTextComponent';
 import {DateTimePickerComponent} from '../shared/DateTimePicker';
 import {DropDownComponent} from '../shared/DropDownComponenet';
 import {ButtonComponent} from '../shared/ButtonComponent';
+import {BUSINESS_ENDPOINTS} from '../services/constants';
+import {axiosIntercepted} from '../services';
+import { useNavigation } from '@react-navigation/native';
 
 let Priority = [
-  {label: 'P1', value: 'PRIORITY 1'},
-  {label: 'P2', value: 'PRIORITY 2'},
-  {label: 'P3', value: 'PRIORITY 3'},
-  {label: 'P4', value: 'PRIORITY 4'},
-  {label: 'P5', value: 'PRIORITY 5'},
-  {label: 'P6', value: 'PRIORITY 6'},
-  {label: 'P7', value: 'PRIORITY 7'},
+  {label: 'P1', value: 'P1'},
+  {label: 'P2', value: 'P2'},
+  {label: 'P3', value: 'P3'},
+  {label: 'P4', value: 'P4'},
+  {label: 'P5', value: 'P5'},
+  {label: 'P6', value: 'P6'},
+  {label: 'P7', value: 'P7'},
+];
+let Status = [
+  {label: 'Pending', value: 'PENDING'},
+  {label: 'Completed', value: 'COMPLETED'},
 ];
 
 export function AddTaskScreen() {
+  const navigation = useNavigation();
   const [raisedDatePlaceHolder, setRaisedDatePlaceHolder] =
     useState('Raised Date');
   const [raisedDate, setRaisedDate] = useState(new Date());
+  const [raisedDateString, setRaisedDateString] = useState(new Date());
 
   const [raisedTimePlaceHolder, setRaisedTimePlaceHolder] =
     useState('Raised Time');
   const [raisedTime, setRaisedTime] = useState(new Date());
+  const [raisedTimeString, setRaisedTimeString] = useState(new Date());
 
   const [timeVisible, setTimeVisible] = useState(false);
   const [dateVisible, setDateVisible] = useState(false);
 
   const [quatationVisible, setQuatationVisible] = useState(false);
+  const [quationPlaceString, setQuatationPlaceString] = useState('');
   const [quatationDate, setQuatationDate] = useState(new Date());
-  const [quationPlaceHolder,setQuatationPlaceHolder] = useState('')
+  const [quationPlaceHolder, setQuatationPlaceHolder] = useState('');
 
+  const [status, setStatus] = useState('');
   const [priority, setPriority] = useState('');
+  const [concept, setConcept] = useState('');
+  const [location, setLocation] = useState('');
+  const [maintenanceWork, setMaintenanceWork] = useState('');
+  const [poc, setPoc] = useState('');
+  const [aging, setAging] = useState('');
+  const [actionPlan, setActionPlan] = useState('');
+  const [responsibility, setResponsibilty] = useState('');
+
+  const save = async () => {
+    try {
+      const URL = BUSINESS_ENDPOINTS.CREATE_TASK;
+      const BODY = JSON.stringify({
+        concept: concept,
+        location: location,
+        maintenanceWork: maintenanceWork,
+        poc: poc,
+        responsibility: responsibility,
+        concernRaisedDate: raisedDateString,
+        raisedTime: raisedTimeString,
+        priority: priority,
+        status: status,
+        aging: aging,
+        approvedQuotationDate: quationPlaceString,
+        actionPlan: actionPlan,
+      });
+      const response = await axiosIntercepted.post(URL, BODY);
+      navigation.goBack()
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const raisedTimeFunction = (event, value) => {
     setTimeVisible(false);
     const d = new Date(value);
     setRaisedTime(d);
-    const hours = d.getUTCHours() < 10 ? '0' + d.getUTCHours() : d.getUTCHours();
-    const minutes = d.getUTCMinutes() < 10 ? '0' + d.getUTCMinutes() : d.getUTCMinutes();
+    const hours =
+      d.getUTCHours() < 10 ? '0' + d.getUTCHours() : d.getUTCHours();
+    const minutes =
+      d.getUTCMinutes() < 10 ? '0' + d.getUTCMinutes() : d.getUTCMinutes();
     setRaisedTimePlaceHolder((hours == 0 ? 12 : hours) + ':' + minutes);
+    setRaisedTimeString(hours + ':' + minutes + ':' + '00');
   };
 
   const raiseDateFunction = (event, value) => {
     setDateVisible(false);
     setRaisedDate(value);
-    setRaisedDatePlaceHolder(
-      value.getDate() + '/' +(value.getMonth()+1) + '/' + value.getUTCFullYear(),
-    );
+    const month =
+      value.getMonth() + 1 < 10
+        ? '0' + (value.getMonth() + 1)
+        : value.getMonth() + 1;
+    const day = value.getDate() < 10 ? '0' + value.getDate() : value.getDate();
+    setRaisedDatePlaceHolder(day + '/' + month + '/' + value.getUTCFullYear());
+    setRaisedDateString(value.getUTCFullYear() + '-' + month + '-' + day);
   };
 
   const quatationDateFunction = (event, value) => {
     setQuatationVisible(false);
     setQuatationDate(value);
-    setQuatationPlaceHolder(
-      value.getDate() + '/' + (value.getMonth()+1) + '/' + value.getUTCFullYear(),
-    );
+    const month =
+      value.getMonth() + 1 < 10
+        ? '0' + (value.getMonth() + 1)
+        : value.getMonth() + 1;
+    const day = value.getDate() < 10 ? '0' + value.getDate() : value.getDate();
+    setQuatationPlaceHolder(day + '/' + month + '/' + value.getUTCFullYear());
+    setQuatationPlaceString(value.getUTCFullYear() + '-' + month + '-' + day);
   };
   return (
     <SafeAreaView style={style.Container}>
@@ -69,27 +123,37 @@ export function AddTaskScreen() {
             upperFont={stylesall.textUpper}
             TextUpper={'Concept'}
             placeHolder={'Enter Your Concept'}
+            value={concept}
+            onchange={data => setConcept(data)}
           />
           <InputTextComponent
             upperFont={stylesall.textUpper}
             TextUpper={'Location'}
             placeHolder={'Enter Your Location'}
+            value={location}
+            onchange={data => setLocation(data)}
           />
           <InputTextComponent
             upperFont={stylesall.textUpper}
             TextUpper={'Maintenance Work'}
             placeHolder={'Enter Maintenance Work'}
             multiLine={true}
+            value={maintenanceWork}
+            onchange={data => setMaintenanceWork(data)}
           />
           <InputTextComponent
             upperFont={stylesall.textUpper}
             TextUpper={'Person to Contact in Store name'}
             placeHolder={'Enter Person to contact'}
+            value={poc}
+            onchange={data => setPoc(data)}
           />
           <InputTextComponent
             upperFont={stylesall.textUpper}
             TextUpper={'Responsibility'}
             placeHolder={'Enter Responsibility'}
+            value={responsibility}
+            onchange={data => setResponsibilty(data)}
           />
 
           <Text style={stylesall.fontStyle}>Concern Raised Date</Text>
@@ -114,10 +178,20 @@ export function AddTaskScreen() {
             data={Priority}
             upperText={'Priority'}
           />
+
+          <DropDownComponent
+            placeholder={'Select'}
+            functionality={value => setStatus(value)}
+            data={Status}
+            upperText={'Status'}
+          />
+
           <InputTextComponent
             upperFont={stylesall.textUpper}
             TextUpper={'Aging'}
             placeHolder={'Done'}
+            value={aging}
+            onchange={data => setAging(data)}
           />
           <Text style={stylesall.fontStyle}>Approved Quatation Date</Text>
           <TouchableOpacityTextbox
@@ -132,9 +206,12 @@ export function AddTaskScreen() {
             TextUpper={'Action Plan'}
             multiLine={true}
             placeHolder={'Action plan'}
+            value={actionPlan}
+            onchange={data => setActionPlan(data)}
           />
 
           <ButtonComponent
+            onPresscomponent={() => save()}
             textStyle={stylesall.textLogin}
             buttonStyle={stylesall.button}
             title={'Save'}

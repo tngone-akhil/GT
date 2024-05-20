@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -12,7 +12,7 @@ import Vector from '../images/svg/Vector';
 import {Loader, UserBox} from '../shared/CommonComponent';
 import {BUSINESS_ENDPOINTS} from '../services/constants';
 import {axiosIntercepted} from '../services';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 export function UserManagement() {
   const navigation = useNavigation();
@@ -21,9 +21,15 @@ export function UserManagement() {
   const [rowsPerPage, setRowsPerPage] = useState(6);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    userList(true);
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const getUsers = async () => {
+        await userList(true);
+      };
+      getUsers();
+      return () => {};
+    }, []),
+  );
 
   const refreshPage = () => {
     setPageNumber(pageNumber + 1);
@@ -35,13 +41,11 @@ export function UserManagement() {
       const pageNo = isLoad ? pageNumber : pageNumber + 1;
       setPageNumber(pageNo);
       setLoading(true);
-      console.log(pageNumber);
       const URL = BUSINESS_ENDPOINTS.GETALLUSER;
       const BODY = JSON.stringify({
         pageNumber: pageNo,
         rowsPerPage: rowsPerPage,
       });
-      console.log(BODY)
       const response = await axiosIntercepted.post(URL, BODY);
       setUsers(users.concat(response.data.users));
       setLoading(false);
@@ -60,7 +64,12 @@ export function UserManagement() {
           justifyContent: 'space-around',
           marginTop: 10,
         }}>
-        <UserBox email={res.email} name={res.userName} role={res.userType} />
+        <UserBox
+          edit={() => navigation.navigate('editUser', {user: res})}
+          email={res.email}
+          name={res.userName}
+          role={res.userType}
+        />
       </View>
     );
   };

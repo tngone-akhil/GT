@@ -19,24 +19,7 @@ import {useAuth} from '../context/AuthContext';
 export function ViewTaskPage() {
   const [details, setDetails] = useState();
   const route = useRoute();
-  const {taskId} = route.params;
-  const {auth} = useAuth();
-
-  useEffect(() => {
-    getTaskDetails();
-  }, []);
-
-  const getTaskDetails = async () => {
-    try {
-      console.log(taskId)
-      const URL = BUSINESS_ENDPOINTS.VIEWTASK +`?id=${taskId}`;
-      const response = await axiosIntercepted(URL);
-      const result = response.data;
-      setDetails(result);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const {task} = route.params;
 
   return (
     <SafeAreaView style={style.Container}>
@@ -46,85 +29,77 @@ export function ViewTaskPage() {
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Concept'}
-            placeHolder={details?.concept}
+            placeHolder={task.concept}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Location'}
-            placeHolder={details?.location}
+            placeHolder={task.location}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Maintanance Work'}
-            placeHolder={details?.maintenanceWork}
+            placeHolder={task.maintenanceWork}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Person to Contact in store Name'}
-            placeHolder={details?.poc}
+            placeHolder={task.poc}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Responsibility'}
-            placeHolder={details?.responsibility}
+            placeHolder={task.responsibility}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Concern Raised Time'}
-            placeHolder={details?.concernRaisedDate}
+            placeHolder={task.concernRaisedDate}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Raised Time'}
-            placeHolder={details?.raisedTime}
+            placeHolder={task.raisedTime}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Priority'}
-            placeHolder={details?.priority}
+            placeHolder={task.priority}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Status'}
-            placeHolder={details?.status}
+            placeHolder={task.status}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Aging'}
-            placeHolder={details?.aging}
+            placeHolder={task.aging}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             TextUpper={'Approved Quotation Date'}
-            placeHolder={details?.approvedQuotationDate}
+            placeHolder={task.approvedQuotationDate}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.upperFont}
             multiLine={true}
-            TextUpper={details?.actionPlan}
-            placeHolder={'Max'}
+            TextUpper={'Action Plan'}
+            placeHolder={task.actionPlan}
             isEditable={false}
           />
-          <Text
-            style={[styles.upperFont, {color: 'black'}, {marginBottom: 30}]}>
-            Remarks
-          </Text>
-          <RemarkBox
-            message={'Task is completed'}
-            name={'Akhil'}
-            dateAndTime={'MAR 09:00AM'}
-          />
+         
         </View>
       </ScrollView>
     </SafeAreaView>

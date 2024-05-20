@@ -62,7 +62,7 @@ function BoxView({Date, Place, status, Header, Subheader, Function,navig}) {
   );
 }
 
-function UserBox({name, email, role}) {
+function UserBox({name, email, role,edit}) {
   return (
     <View style={style.EachView}>
       <View style={{width: '50%'}}>
@@ -76,7 +76,7 @@ function UserBox({name, email, role}) {
           flexDirection: 'row',
           justifyContent: 'space-evenly',
         }}>
-        <TouchableOpacity style={style.edit}>
+        <TouchableOpacity onPress={edit} style={style.edit}>
           <Text style={{color: 'blue'}}>Edit</Text>
         </TouchableOpacity>
         <TouchableOpacity style={style.delete}>
@@ -115,7 +115,7 @@ function TouchableOpacityTextbox({onpress, value, isClock = false}) {
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
-        <Text style={{padding: 10, top: 3}}>{value}</Text>
+        <Text style={{padding: 10, top: 3,color:'black'}}>{value}</Text>
         {!isClock ? (
           <Calender style={style.calender} />
         ) : (

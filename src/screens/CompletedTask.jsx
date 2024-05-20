@@ -38,6 +38,7 @@ export function CompletedTask() {
       const response = await axiosIntercepted.get(URL);
       const result = response.data;
       setData(result);
+      console.log(result)
       setLoader(false);
     } catch (err) {
       console.log(err);

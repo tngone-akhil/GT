@@ -40,6 +40,7 @@ export const InputTextComponent = ({
               backgroundColor: !isEditable ? '#ECECEC' : 'white',
               height: multiLine ? 100 : 45,
               borderColor:!errorComponent ? '#808080':'red',
+              
             },
           ]}
           placeholder={placeHolder}
@@ -68,13 +69,13 @@ export const InputTextComponent = ({
 
 const style = StyleSheet.create({
   textbox: {
-    
     borderWidth: 1,
     borderRadius: 10,
     width: '96%',
     padding: 10,
     alignSelf: 'center',
     marginBottom: 10,
+    color:'black'
   },
   text: {
     color: 'black',

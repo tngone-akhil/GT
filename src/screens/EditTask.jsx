@@ -14,7 +14,9 @@ import {InputTextComponent} from '../shared/InputTextComponent';
 import {DateTimePickerComponent} from '../shared/DateTimePicker';
 import {DropDownComponent} from '../shared/DropDownComponenet';
 import {ButtonComponent} from '../shared/ButtonComponent';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {BUSINESS_ENDPOINTS} from '../services/constants';
+import {axiosIntercepted} from '../services';
 
 let Status = [
   {label: 'Pending', value: 'PENDING'},
@@ -31,36 +33,112 @@ let Priority = [
 ];
 
 export function EditTaskScreen() {
-  const [raisedDatePlaceHolder, setRaisedDatePlaceHolder] =useState('Raised Date');
-  const [raisedDate, setRaisedDate] = useState(new Date());
+  const route = useRoute();
+  const {task} = route.params;
 
-  const [closedTimePlaceHolder, setClosedTimePlaceHolder] = useState('Raised Time');
+  const [closedTimePlaceHolder, setClosedTimePlaceHolder] = useState('');
   const [closedTime, setClosedTime] = useState(new Date());
+  const [closedTimeString,setClosedTimeString] = useState()
 
-  const [closedDatePlaceHolder, setClosedDatePlaceHolder] =useState('Raised Date');
+  const [closedDatePlaceHolder, setClosedDatePlaceHolder] = useState('');
   const [closedDate, setClosedDate] = useState(new Date());
+  const [closedDateString, setClosedDateString] = useState();
 
-  const [raisedTimePlaceHolder, setRaisedTimePlaceHolder] = useState('Raised Time');
-  const [raisedTime, setRaisedTime] = useState(new Date());
+  const [closedTimeVisible, setClosedTimeVisible] = useState(false);
+  const [closedDateVisible, setClosedDateVisible] = useState(false);
+  const [quatationDateVisible, setQuatationDateVisible] = useState(false);
 
-  const [timeVisible, setTimeVisible] = useState(false);
-  const [dateVisible, setDateVisible] = useState(false);
-
-  const [priority, setPriority] = useState('');
-
-  const navigation = useNavigation()
-  const route = useRoute()
-
-  const{taskId} = route.params
+  const [quatationDateString, setQuatationDateString] = useState('');
+  const [quatationDate, setQuatationDate] = useState(new Date());
+  const [quatationDatePlaceHolder,setQuatationDatePlaceHolder] = useState(task.approvedQuotationDate)
 
 
-  const getTaskDetails = async() =>{
+  const [totalHours, setTotalHours] = useState(task?.totalHours);
+  const [status, setStatus] = useState(task?.status);
+  const [remarks, setRemarks] = useState(task?.remarks);
+  const [concept, setConcept] = useState(task?.concept);
+  const [location, setLocation] = useState(task?.location);
+  const [maintenanceWork, setMaintenanceWork] = useState(task?.maintenanceWork);
+  const [poc, setPoc] = useState(task?.poc);
+  const [aging, setAging] = useState(task?.aging);
+  const [actionPlan, setActionPlan] = useState(task?.actionPlan);
+  const [responsibility, setResponsibilty] = useState(task.responsibility);
+  const [priority, setPriority] = useState(task.priority);
+
+  const navigation = useNavigation();
+
+  useEffect(()=>{
+      getTotalTime();
+   
+  },[closedDateString,closedTimeString])
+
+
+  const getTotalTime = async() =>{
     try{
-      const URL = '';
+      const URL = BUSINESS_ENDPOINTS.TOTAL_HOURS
+      const BODY = JSON.stringify(
+        {
+          startDate: task.concernRaisedDate,
+          startTime: task.raisedTime,
+          endDate: closedDateString,
+          endTime: closedTimeString
+        }
+      )
+     
+      const response = await axiosIntercepted.post(URL,BODY)
+      setTotalHours(response.data.totalHours)
     }catch(err){
       console.log(err)
     }
   }
+
+  const editTaskDetails = async () => {
+    try {
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const closedDateFunction = (event,value) => {
+    setClosedDateVisible(false);
+    setClosedDate(value)
+    const month =
+      value.getMonth() + 1 < 10
+        ? '0' + (value.getMonth() + 1)
+        : value.getMonth() + 1;
+    const day = value.getDate() < 10 ? '0' + value.getDate() : value.getDate();
+    setClosedDatePlaceHolder(day + '/' + month + '/' + value.getUTCFullYear());
+    setClosedDateString(value.getUTCFullYear() + '-' + month + '-' + day);
+  };
+
+  const closedTimeFunction = (event,value) => {
+    
+    setClosedTimeVisible(false);
+    const d = new Date(value)
+    setClosedTime(d)
+    const hours =
+      d.getUTCHours() < 10 ? '0' + d.getUTCHours() : d.getUTCHours();
+    const minutes =
+      d.getUTCMinutes() < 10 ? '0' + d.getUTCMinutes() : d.getUTCMinutes();
+      
+    setClosedTimePlaceHolder((hours == 0 ? 12 : hours) + ':' + minutes);
+    setClosedTimeString(hours + ':' + minutes + ':' + '00');
+    
+  };
+
+  const quatationDateFunction = (event,value) => {
+
+    setQuatationDateVisible(false);
+    setQuatationDate(value)
+    const month =
+      value.getMonth() + 1 < 10
+        ? '0' + (value.getMonth() + 1)
+        : value.getMonth() + 1;
+    const day = value.getDate() < 10 ? '0' + value.getDate() : value.getDate();
+    setQuatationDatePlaceHolder(day + '/' + month + '/' + value.getUTCFullYear());
+    setRaisedDateString(value.getUTCFullYear() + '-' + month + '-' + day);
+  };
+
   return (
     <SafeAreaView style={style.Container}>
       <Header header={'Edit Task'} />
@@ -69,27 +147,28 @@ export function EditTaskScreen() {
           <Text style={styles.fontStyle}>Concern Closing Date</Text>
           <TouchableOpacityTextbox
             onpress={() => {
-              setDateVisible(true);
+              setClosedDateVisible(true);
             }}
-            value={raisedDatePlaceHolder}
+            value={closedDatePlaceHolder}
           />
 
           <Text style={styles.fontStyle}>Closed Time</Text>
           <TouchableOpacityTextbox
             onpress={() => {
-              setTimeVisible(true);
+              setClosedTimeVisible(true);
             }}
             isClock={true}
-            value={raisedTimePlaceHolder}
+            value={closedTimePlaceHolder}
           />
 
           <InputTextComponent
             upperFont={styles.textUpper}
             TextUpper={'Total Hours'}
-            placeHolder={'Total Hours'}
+            placeHolder={totalHours}
+            isEditable={false}
           />
           <DropDownComponent
-            placeholder={'Select'}
+            placeholder={status}
             functionality={value => setPriority(value)}
             data={Status}
             upperText={'Status'}
@@ -97,7 +176,8 @@ export function EditTaskScreen() {
 
           <InputTextComponent
             upperFont={styles.textUpper}
-            placeHolder={'Remarks'}
+            placeHolder={remarks}
+            value={remarks}
             TextUpper={'Remarks'}
             multiLine={true}
           />
@@ -105,92 +185,92 @@ export function EditTaskScreen() {
           <InputTextComponent
             upperFont={styles.textUpper}
             TextUpper={'Concept'}
-            placeHolder={'Enter Your Concept'}
+            placeHolder={concept}
+            value={concept}
           />
           <InputTextComponent
             upperFont={styles.textUpper}
             TextUpper={'Location'}
-            placeHolder={'Enter Your Location'}
+            placeHolder={location}
+            value={location}
           />
           <InputTextComponent
             upperFont={styles.textUpper}
             TextUpper={'Maintenance Work'}
-            placeHolder={'Enter Maintenance Work'}
+            placeHolder={maintenanceWork}
+            value={maintenanceWork}
             multiLine={true}
           />
           <InputTextComponent
             upperFont={styles.textUpper}
             TextUpper={'Person to Contact in Store name'}
-            placeHolder={'Enter Person to contact'}
+            placeHolder={poc}
+            value={poc}
           />
           <InputTextComponent
             upperFont={styles.textUpper}
             TextUpper={'Responsibility'}
-            placeHolder={'Enter Responsibility'}
+            placeHolder={responsibility}
+            value={responsibility}
           />
 
           <Text style={styles.fontStyle}>Concern Raised Date</Text>
-          <TouchableOpacityTextbox
-            onpress={() => {
-              setDateVisible(true);
-            }}
-            value={raisedDatePlaceHolder}
-          />
+          <TouchableOpacityTextbox value={task.concernRaisedDate} />
 
           <Text style={styles.fontStyle}>Raised Time</Text>
-          <TouchableOpacityTextbox
-            onpress={() => {
-              setTimeVisible(true);
-            }}
-            isClock={true}
-            value={raisedTimePlaceHolder}
-          />
+          <TouchableOpacityTextbox isClock={true} value={task.raisedTime} />
           <DropDownComponent
             placeholder={'Select'}
             functionality={value => setPriority(value)}
+            placeHolder={priority}
             data={Priority}
             upperText={'Priority'}
           />
           <InputTextComponent
             upperFont={styles.textUpper}
             TextUpper={'Aging'}
-            placeHolder={'Done'}
+            placeHolder={aging}
+            value={aging}
           />
           <Text style={styles.fontStyle}>Approved Quatation Date</Text>
-          <TouchableOpacityTextbox />
+          <TouchableOpacityTextbox onpress={()=>setQuatationDateVisible(true)} value={quatationDatePlaceHolder} />
 
           <InputTextComponent
             upperFont={styles.textUpper}
             TextUpper={'Action Plan'}
             multiLine={true}
+            placeHolder={actionPlan}
+            value={actionPlan}
           />
 
           <ButtonComponent
             textStyle={styles.textLogin}
-            onPresscomponent={()=>console.log(taskId)}
+            onPresscomponent={() => console.log(taskId)}
             buttonStyle={styles.button}
             title={'Save'}
           />
         </View>
       </ScrollView>
-      {timeVisible && (
+      {closedTimeVisible && (
         <DateTimePickerComponent
-          functioning={value => {
-            setTimeVisible(false);
-          }}
-          value={raisedTime}
+          functioning={closedTimeFunction}
+          value={closedTime}
           mode={'time'}
           display="clock"
         />
       )}
 
-      {dateVisible && (
+      {closedDateVisible && (
         <DateTimePickerComponent
-          functioning={value => {
-            setDateVisible(false);
-            console.log(value);
-          }}
-          value={raisedTime}
+          functioning={closedDateFunction}
+          value={closedDate}
+          mode={'date'}
+        />
+      )}
+      {quatationDateVisible && (
+        <DateTimePickerComponent
+          functioning={quatationDateFunction}
+          value={new Date()}
           mode={'date'}
         />
       )}

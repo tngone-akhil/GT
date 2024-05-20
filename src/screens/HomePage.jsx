@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -17,7 +17,7 @@ import Document from '../images/svg/docu';
 import Upload from '../images/svg/Upload';
 import Adduser from '../images/svg/adduser';
 import ThreeUser from '../images/svg/threeuser';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {BUSINESS_ENDPOINTS} from '../services/constants';
 import useAxiosPrivate from '../hooks/useAxios';
 
@@ -33,9 +33,15 @@ export function HomePage() {
   const [totalUserCount,setTotalUserCount] = useState(0)
   const [loader,setLoader] = useState(false)
 
-  useEffect(() => {
-    getKeyPairValues();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const getKeyPairValue = async () => {
+        await getKeyPairValues(true);
+      };
+      getKeyPairValue();
+      return () => {};
+    }, []),
+  );
 
   const getKeyPairValues = async () => {
     // setRefreshing(true);
@@ -112,7 +118,7 @@ export function HomePage() {
             }}>
             Performance Score
           </Text>
-          <Text style={style.scoreStyle}>{performanceScore}</Text>
+          <Text style={style.scoreStyle}>{Math.trunc(performanceScore)}</Text>
         </View>
 
         <Score style={{position: 'absolute', right: 30, top: 30}} />
@@ -235,10 +241,10 @@ const style = StyleSheet.create({
   },
   scoreStyle: {
     color: '#0368E9',
-    width: 60,
+    width: 55,
     borderColor: '#0368E9',
     borderWidth: 1,
-    paddingLeft: 20,
+    paddingLeft: "7%",
     borderRadius: 20,
     marginLeft: 25,
     fontWeight: '500',

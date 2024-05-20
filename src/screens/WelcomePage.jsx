@@ -3,8 +3,6 @@ import {
   Image,
   SafeAreaView,
   StyleSheet,
-  TouchableOpacity,
-  Text,
   View,
 } from 'react-native';
 import {ButtonComponent} from '../shared/ButtonComponent';

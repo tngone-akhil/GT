@@ -16,7 +16,7 @@ export function DropDownComponent({
       <Text style={[upperTextStyle,{color:'black',fontWeight:'500'}]}>{upperText}</Text>
       <RNPickerSelect
         useNativeAndroidPickerStyle={false}
-
+       
         style={pickerSelectStyles}
         items={data}
         onValueChange={functionality}

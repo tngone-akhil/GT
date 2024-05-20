@@ -73,17 +73,9 @@ export function LoginPage() {
       setLoader(false)
     } catch (err) {
       console.log(err);
-      // setRefreshing(false);
-      // Toast.show({
-      //   visibilityTime: 2000,
-      //   bottomOffset: 40,
-      //   position: 'bottom',
-      //   type: 'error',
-      //   text1: ApiErrorTexts.oops,
-      //   text2: ApiErrorTexts.something,
-      // });
+   
     } finally {
-      // setRefreshing(false);
+    
     }
   };
 

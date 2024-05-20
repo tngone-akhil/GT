@@ -21,6 +21,7 @@ import {EditProfile} from '../screens/EditProfile';
 import {AddUser} from '../screens/AddUser';
 import {UpdatePassword} from '../screens/UpdatePassword';
 import {useAuth} from '../context/AuthContext';
+import { EditUser } from '../screens/EditUser';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +36,6 @@ export const RootNavigation = () => {
 const HomeNavigator = () => {
   const {auth, setAuth} = useAuth();
   const {isDarkMode} = useAppTheme();
-
 
   return (
     <>
@@ -129,6 +129,11 @@ const HomeNavigator = () => {
           <Stack.Screen
             name="updatePassword"
             component={UpdatePassword}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="editUser"
+            component={EditUser}
             options={{headerShown: false}}
           />
         </Stack.Group>

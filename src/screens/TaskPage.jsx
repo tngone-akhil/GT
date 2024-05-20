@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -14,17 +14,25 @@ import Filter from '../images/svg/FilterBlack';
 import Vector from '../images/svg/Vector';
 
 import {BoxView, Loader} from '../shared/CommonComponent';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {BUSINESS_ENDPOINTS} from '../services/constants';
 import { axiosIntercepted } from '../services';
 
 export function TaskPage() {
+
+  const navigation = useNavigation()
   const [data, setData] = useState([]);
   const [loader, setLoader] = useState(false);
 
-  useEffect(() => {
-    GetAllTask();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const getTask = async () => {
+        await GetAllTask(true);
+      };
+      getTask();
+      return () => {};
+    }, []),
+  );
 
 
   const renderItem = data => {
@@ -32,13 +40,13 @@ export function TaskPage() {
     return (
       <View style={styles.view}>
         <BoxView
-         navig={()=>navigation.navigate('viewTask',{taskId:res.taskId})}
+         navig={()=>navigation.navigate('viewTask',{task:res})}
           Header={res.concept}
           Subheader={res.maintenanceWork}
           status={res.status}
           Date={res.approvedQuotationDate}
           Place={res.location}
-          Function={() => navigation.navigate('editTask',{taskId:res.taskId})}
+          Function={() => navigation.navigate('editTask',{task:res})}
         />
       </View>
     );
@@ -69,7 +77,7 @@ export function TaskPage() {
     }
   };
 
-  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.container}>
       {loader && <Loader/>}
