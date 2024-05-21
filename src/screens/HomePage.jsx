@@ -20,6 +20,7 @@ import ThreeUser from '../images/svg/threeuser';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {BUSINESS_ENDPOINTS} from '../services/constants';
 import useAxiosPrivate from '../hooks/useAxios';
+import { useAuth } from '../context/AuthContext';
 
 export function HomePage() {
   const navigation = useNavigation();
@@ -32,11 +33,13 @@ export function HomePage() {
   const [totalTaskCount,setTotalTaskCount] = useState(0)
   const [totalUserCount,setTotalUserCount] = useState(0)
   const [loader,setLoader] = useState(false)
+  const {auth} = useAuth()
 
   useFocusEffect(
     useCallback(() => {
       const getKeyPairValue = async () => {
         await getKeyPairValues(true);
+
       };
       getKeyPairValue();
       return () => {};
@@ -244,7 +247,7 @@ const style = StyleSheet.create({
     width: 55,
     borderColor: '#0368E9',
     borderWidth: 1,
-    paddingLeft: "7%",
+    paddingLeft: "9%",
     borderRadius: 20,
     marginLeft: 25,
     fontWeight: '500',

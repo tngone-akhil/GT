@@ -62,7 +62,7 @@ function BoxView({Date, Place, status, Header, Subheader, Function,navig}) {
   );
 }
 
-function UserBox({name, email, role,edit}) {
+function UserBox({name, email, deleteFunction,role,edit,}) {
   return (
     <View style={style.EachView}>
       <View style={{width: '50%'}}>
@@ -79,7 +79,7 @@ function UserBox({name, email, role,edit}) {
         <TouchableOpacity onPress={edit} style={style.edit}>
           <Text style={{color: 'blue'}}>Edit</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={style.delete}>
+        <TouchableOpacity onPress={deleteFunction} style={style.delete}>
           <Text style={{color: 'red'}}>Delete</Text>
         </TouchableOpacity>
       </View>

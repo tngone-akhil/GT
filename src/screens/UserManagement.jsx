@@ -11,14 +11,14 @@ import {
 import Vector from '../images/svg/Vector';
 import {Loader, UserBox} from '../shared/CommonComponent';
 import {BUSINESS_ENDPOINTS} from '../services/constants';
-import {axiosIntercepted} from '../services';
+import {axiosBase, axiosIntercepted} from '../services';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 export function UserManagement() {
   const navigation = useNavigation();
   const [users, setUsers] = useState([]);
   const [pageNumber, setPageNumber] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
 
   useFocusEffect(
@@ -30,6 +30,17 @@ export function UserManagement() {
       return () => {};
     }, []),
   );
+
+  const deleteUser = async id => {
+    try {
+      const user = users.filter(user => user.userId != id);
+      setUsers(user);
+      const URL = BUSINESS_ENDPOINTS.DELETE_USER + `/${id}`;
+      await axiosIntercepted(URL);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const refreshPage = () => {
     setPageNumber(pageNumber + 1);
@@ -65,6 +76,7 @@ export function UserManagement() {
           marginTop: 10,
         }}>
         <UserBox
+          deleteFunction={() => deleteUser(res.userId)}
           edit={() => navigation.navigate('editUser', {user: res})}
           email={res.email}
           name={res.userName}

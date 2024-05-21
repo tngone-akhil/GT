@@ -42,31 +42,31 @@ export function EditUser() {
             onchange={value => setName(value)}
             upperFont={styles.fontStyle}
             TextUpper={'Name'}
-            placeHolder={user.userName}
+            placeHolder={user?.userName}
           />
           <InputTextComponent
             value={phone}
             onchange={value => setPhone(value)}
             upperFont={styles.fontStyle}
             TextUpper={'Phone'}
-            placeHolder={user.phoneNumber}
+            placeHolder={user?.phoneNumber}
           />
           <InputTextComponent
             upperFont={styles.fontStyle}
             TextUpper={'email'}
-            placeHolder={user.email}
+            placeHolder={user?.email}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.fontStyle}
             TextUpper={'Location'}
-            placeHolder={user.location}
+            placeHolder={user?.location}
             isEditable={false}
           />
           <InputTextComponent
             upperFont={styles.fontStyle}
             TextUpper={'Role'}
-            placeHolder={user.userType}
+            placeHolder={user?.userType}
             isEditable={false}
           />
           <ButtonComponent

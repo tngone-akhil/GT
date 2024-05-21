@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Header} from '../shared/CommonComponent';
+import {Header, Loader} from '../shared/CommonComponent';
 import {style} from './UserManagement';
 import {InputTextComponent} from '../shared/InputTextComponent';
 import {stylesall} from './AddTaskScreen';
@@ -19,7 +19,7 @@ import { axiosIntercepted } from '../services';
 
 const roles = [
   {label: 'Admin', value: 'ADMIN'},
-  {label: 'User', value: 'USER'},
+  {label: 'User', value: 'CLIENT'},
 ];
 
 export function AddUser() {
@@ -32,10 +32,12 @@ export function AddUser() {
   const [phone,setPhone] = useState('')
   const [location,setLocation] = useState('')
   const [role,setRole] = useState('');
+  const [loader,setLoader] = useState(false)
 
 
   const saveUser = async() =>{
     try{
+      setLoader(true)
       const URL = AUTH_ENDPOINTS.ADD_USER
       const BODY = JSON.stringify(
         {
@@ -48,7 +50,7 @@ export function AddUser() {
       )
       const response = await axiosIntercepted.post(URL,BODY)
       navigation.navigate('User')
-      console.log(response.data)
+      setLoader(false)
     }catch(err){
       console.log(err)
     }
@@ -56,6 +58,7 @@ export function AddUser() {
 
   return (
     <SafeAreaView style={style.Container}>
+       {loader && <Loader />}
       <Header header={'Add User'} />
       <ScrollView>
         <View>

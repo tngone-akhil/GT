@@ -11,10 +11,32 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {InputTextComponent} from '../shared/InputTextComponent';
 import {ButtonComponent} from '../shared/ButtonComponent';
-
+import {AUTH_ENDPOINTS, BUSINESS_ENDPOINTS} from '../services/constants';
+import { axiosBase, axiosIntercepted } from '../services';
+import { useNavigation } from '@react-navigation/native';
 
 export function UpdatePassword() {
-  const {email, setEmail} = useData('');
+  const navigation = useNavigation()
+  const [password, setPassword] = useState({
+    password: '',
+    confirmPassword: '',
+  });
+  
+
+  const updatePassword = async() => {
+    try {
+      const URL = AUTH_ENDPOINTS.UPDATE_PASSWORD;
+      const BODY = JSON.stringify({
+        password: password.password,
+        confirmPassword: password.confirmPassword,
+      });
+      const res = await axiosIntercepted.post(URL,BODY)
+      navigation.navigate('Settings')
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // console.log(password,"hih");
   return (
     <KeyboardAvoidingView
       style={{flex: 1, backgroundColor: 'white'}}
@@ -41,20 +63,30 @@ export function UpdatePassword() {
                 upperFont={styles.upperText}
                 TextUpper={'New Password'}
                 placeHolder={'#######'}
-                value={email}
-                onchange={setEmail}
+                value={password.password}
+                onchange={data => {
+                  setPassword(prev => {
+                    
+                    return {...prev, password: data,};
+                  });
+                }}
               />
               <InputTextComponent
                 upperFont={styles.upperText}
                 TextUpper={'Confirm Password'}
                 placeHolder={'#######'}
-                value={email}
-                onchange={setEmail}
+                value={password.confirmPassword}
+                onchange={data => {
+                  setPassword(prev =>{
+                    return {...prev,confirmPassword:data}
+                  })
+                }}
               />
               <ButtonComponent
                 title={'Sent'}
                 buttonStyle={styles.button}
                 textStyle={styles.textInButton}
+                onPresscomponent={updatePassword}
               />
             </View>
           </ScrollView>
