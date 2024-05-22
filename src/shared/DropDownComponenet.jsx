@@ -9,6 +9,7 @@ export function DropDownComponent({
   functionality,
   data = [],
   placeholder,
+  val
 
 }) {
   return (
@@ -16,7 +17,7 @@ export function DropDownComponent({
       <Text style={[upperTextStyle,{color:'black',fontWeight:'500'}]}>{upperText}</Text>
       <RNPickerSelect
         useNativeAndroidPickerStyle={false}
-       
+        value={val}
         style={pickerSelectStyles}
         items={data}
         onValueChange={functionality}

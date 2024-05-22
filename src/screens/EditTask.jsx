@@ -198,6 +198,7 @@ export function EditTaskScreen() {
           />
           <DropDownComponent
             placeholder={'Select a value'}
+            val={priority}
             functionality={value => {
               setStatus(value);
             }}

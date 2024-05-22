@@ -91,16 +91,7 @@ const HomeNavigator = () => {
             component={PendingTask}
             options={{headerShown: false}}
           />
-          <Stack.Screen
-            name="Filter"
-            component={FilterPage}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="advFilter"
-            component={AdvancedFilter}
-            options={{headerShown: false}}
-          />
+          
           <Stack.Screen
             name="viewTask"
             component={ViewTaskPage}

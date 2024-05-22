@@ -11,15 +11,15 @@ import {style} from './UserManagement';
 import Arrow from '../images/svg/arrow';
 import {InputTextComponent} from '../shared/InputTextComponent';
 import {Header, RemarkBox} from '../shared/CommonComponent';
-import {BUSINESS_ENDPOINTS} from '../services/constants';
+
 import {useRoute} from '@react-navigation/native';
-import {axiosIntercepted} from '../services';
-import {useAuth} from '../context/AuthContext';
+
 
 export function ViewTaskPage() {
   const [details, setDetails] = useState();
   const route = useRoute();
   const {task} = route.params;
+  console.log(task)
 
   return (
     <SafeAreaView style={style.Container}>
