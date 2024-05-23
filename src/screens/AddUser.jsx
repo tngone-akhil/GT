@@ -13,9 +13,9 @@ import {InputTextComponent} from '../shared/InputTextComponent';
 import {stylesall} from './AddTaskScreen';
 import {ButtonComponent} from '../shared/ButtonComponent';
 import {DropDownComponent} from '../shared/DropDownComponenet';
-import { useNavigation } from '@react-navigation/native';
-import { AUTH_ENDPOINTS } from '../services/constants';
-import { axiosIntercepted } from '../services';
+import {useNavigation} from '@react-navigation/native';
+import {AUTH_ENDPOINTS} from '../services/constants';
+import {axiosIntercepted} from '../services';
 
 const roles = [
   {label: 'Admin', value: 'ADMIN'},
@@ -23,64 +23,76 @@ const roles = [
 ];
 
 export function AddUser() {
-
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [locationOn, setLocationOn] = useState(true);
   const [headQuaterOn, setHeadQuaterOn] = useState(false);
-  const [name,setName] = useState('')
-  const [email,setEmail] = useState('')
-  const [phone,setPhone] = useState('')
-  const [location,setLocation] = useState('')
-  const [role,setRole] = useState('');
-  const [loader,setLoader] = useState(false)
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
+  const [location, setLocation] = useState();
+  const [role, setRole] = useState();
+  const [loader, setLoader] = useState(false);
+  const [submit, setSubmit] = useState(false);
+  const [empty, setEmpty] = useState(false);
 
-
-  const saveUser = async() =>{
-    try{
-      setLoader(true)
-      const URL = AUTH_ENDPOINTS.ADD_USER
-      const BODY = JSON.stringify(
-        {
-          name: name,
-          email: email,
-          phoneNumber: phone,
-          location: location,
-          role: role
-        }
-      )
-      const response = await axiosIntercepted.post(URL,BODY)
-      navigation.navigate('User')
-      setLoader(false)
-    }catch(err){
-      console.log(err)
+  const saveUser = async () => {
+    setSubmit(true);
+    const valid = validation();
+    console.log(valid);
+    if (!valid) return;
+    try {
+      setLoader(true);
+      const URL = AUTH_ENDPOINTS.ADD_USER;
+      const BODY = JSON.stringify({
+        name: name,
+        email: email,
+        phoneNumber: phone,
+        location: location,
+        role: role,
+      });
+      const response = await axiosIntercepted.post(URL, BODY);
+      setLoader(false);
+      setSubmit(false);
+      navigation.navigate('User');
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
+
+  const validation = () => {
+    if (name == null) {
+      setEmpty(true)
+      return false;
+    }
+    return true;
+  };
 
   return (
     <SafeAreaView style={style.Container}>
-       {loader && <Loader />}
+      {loader && <Loader />}
       <Header header={'Add User'} />
       <ScrollView>
         <View>
           <InputTextComponent
+            errorComponent={empty}
             upperFont={stylesall.fontStyle}
             TextUpper={'Name'}
             value={name}
-            onchange={e=>setName(e)}
+            onchange={e => setName(e)}
             placeHolder={'Enter the Name'}
           />
           <InputTextComponent
             upperFont={stylesall.fontStyle}
             TextUpper={'Email'}
             value={email}
-            onchange={e=>setEmail(e)}
+            onchange={e => setEmail(e)}
             placeHolder={'Enter the Email'}
           />
           <InputTextComponent
             upperFont={stylesall.fontStyle}
             TextUpper={'Phone'}
             value={phone}
-            onchange={e=>setPhone(e)}
+            onchange={e => setPhone(e)}
             placeHolder={'Enter the Phone Number'}
           />
           <View
@@ -121,12 +133,17 @@ export function AddUser() {
               </Text>
             </TouchableOpacity>
           </View>
-          <InputTextComponent onchange={e=>setLocation(e)} placeHolder={'Enter the Name'} />
+          <InputTextComponent
+            onchange={e => setLocation(e)}
+            placeHolder={'Enter the Name'}
+          />
           <DropDownComponent
             upperText={'Role'}
             placeholder={'Select Role'}
             data={roles}
-            functionality={(value)=>{setRole(value)}}
+            functionality={value => {
+              setRole(value);
+            }}
           />
           <ButtonComponent
             onPresscomponent={saveUser}

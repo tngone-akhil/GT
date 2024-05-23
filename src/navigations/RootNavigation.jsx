@@ -21,7 +21,8 @@ import {EditProfile} from '../screens/EditProfile';
 import {AddUser} from '../screens/AddUser';
 import {UpdatePassword} from '../screens/UpdatePassword';
 import {useAuth} from '../context/AuthContext';
-import { EditUser } from '../screens/EditUser';
+import {EditUser} from '../screens/EditUser';
+import {BottomNavigatorAdmin} from './BotttomNavigatorAdmin';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,7 +35,7 @@ export const RootNavigation = () => {
 };
 
 const HomeNavigator = () => {
-  const {auth, setAuth} = useAuth();
+  const {auth} = useAuth();
   const {isDarkMode} = useAppTheme();
 
   return (
@@ -91,7 +92,7 @@ const HomeNavigator = () => {
             component={PendingTask}
             options={{headerShown: false}}
           />
-          
+
           <Stack.Screen
             name="viewTask"
             component={ViewTaskPage}

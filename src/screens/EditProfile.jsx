@@ -13,10 +13,10 @@ export function EditProfile() {
   const navigation = useNavigation();
   const {auth} = useAuth();
   const [user, setUser] = useState();
-  const [name, setName] = useState();
-  const [phone, setPhone] = useState();
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [loader, setLoader] = useState(false);
-
+  const [phoneError,setPhoneError] = useState(false)
   useEffect(() => {
     getDetails();
   }, []);
@@ -38,6 +38,11 @@ export function EditProfile() {
 
   const updateProfile = async () => {
     try {
+      if(phone.length != 10){
+        setPhoneError(true)
+        return
+      }
+      setPhoneError(false)
       setLoader(true);
       const URL = BUSINESS_ENDPOINTS.EDIT_PROFILE;
       const BODY = JSON.stringify({
@@ -71,6 +76,8 @@ export function EditProfile() {
             TextUpper={'Phone'}
             placeHolder={phone}
             value={phone}
+            keyboardType={'numeric'}
+            errorComponent={phoneError}
             onchange={value => setPhone(value)}
           />
           <InputTextComponent

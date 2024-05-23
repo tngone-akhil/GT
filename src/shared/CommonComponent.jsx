@@ -13,7 +13,7 @@ function RoundView({color}) {
   return <View style={[style.round, {backgroundColor: color}]}></View>;
 }
 
-function BoxView({Date, Place, status, Header, Subheader, Function,navig}) {
+function BoxView({Date, Place, status, Header, Subheader, Function,navig,disableEdit}) {
   return (
     <TouchableOpacity  onPress={navig} style={style.boxMainView}>
       <View style={style.boxInnerTopView}>
@@ -52,6 +52,7 @@ function BoxView({Date, Place, status, Header, Subheader, Function,navig}) {
         </View>
         <View>
           <TouchableOpacity
+            disabled={disableEdit}
             onPress={Function}
             style={{marginRight: 15, marginTop: 20}}>
             <Edit />

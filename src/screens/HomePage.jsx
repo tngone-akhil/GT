@@ -34,6 +34,7 @@ import {styles} from './TaskPage';
 import {DateTimePickerComponent} from '../shared/DateTimePicker';
 
 export function HomePage() {
+  const {auth} = useAuth();
   const navigation = useNavigation();
   const axiosIntercepted = useAxiosPrivate();
   const [performanceScore, setPerformanceScore] = useState(0);
@@ -83,12 +84,12 @@ export function HomePage() {
     const date = value.getDate() < 10 ? '0' + value.getDate() : value.getDate();
     const month =
       value.getMonth() < 10 ? '0' + (value.getMonth() + 1) : value.getMonth();
-      setFilter(prev => {
-        return {
-          ...prev,
-          fromDate: value.getUTCFullYear() + '-' + month + '-' + date,
-        };
-      });
+    setFilter(prev => {
+      return {
+        ...prev,
+        fromDate: value.getUTCFullYear() + '-' + month + '-' + date,
+      };
+    });
   };
 
   const onDateChangeTo = (event, value) => {
@@ -117,7 +118,7 @@ export function HomePage() {
         fromDate: filter.fromDate == 'From' ? '0001-01-01' : filter.fromDate,
         location: filter.location,
       });
-      
+
       const response = await axiosIntercepted.post(URL, BODY);
       const results = response.data;
       setAdminCount(results.adminCount);
@@ -142,7 +143,7 @@ export function HomePage() {
     <SafeAreaView style={style.container}>
       {loader && <Loader />}
       <View style={style.back}>
-        <Text style={style.text}>Hi,Alex Turner</Text>
+        <Text style={style.text}>Hi,{auth.username}</Text>
         <Text
           style={{
             color: 'white',
@@ -188,36 +189,46 @@ export function HomePage() {
       </Text>
 
       <View style={style.reportView}>
-        <TouchableOpacity style={[style.onerow, {backgroundColor: '#ECF3FF'}]}>
-          <View>
-            <Text style={style.boxText}>Total User</Text>
-            <RoundView color={'#2051E5'} />
-            <Text style={[style.insideboxtext, {color: '#2051E5'}]}>
-              {totalUserCount}
-            </Text>
-            <ThreeUser style={[style.svg, {top: 76}]} />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={[style.onerow, {backgroundColor: '#FEF1F1'}]}>
-          <View>
-            <Text style={style.boxText}>Total Client</Text>
-            <Text style={[style.insideboxtext, {color: '#FF4B4B'}]}>
-              {clientCount}
-            </Text>
-            <RoundView color={'#FF4B4B'} />
-            <Friend style={style.svg} />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={[style.onerow, {backgroundColor: '#FFE3C1'}]}>
-          <View>
-            <Text style={style.boxText}>Total Admin</Text>
-            <RoundView color={'#AD6510'} />
-            <Text style={[style.insideboxtext, {color: '#AD6510'}]}>
-              {adminCount}
-            </Text>
-            <Adduser style={style.svg} />
-          </View>
-        </TouchableOpacity>
+        {auth.role != 'CLIENT' && (
+          <TouchableOpacity
+            style={[style.onerow, {backgroundColor: '#ECF3FF'}]}>
+            <View>
+              <Text style={style.boxText}>Total User</Text>
+              <RoundView color={'#2051E5'} />
+              <Text style={[style.insideboxtext, {color: '#2051E5'}]}>
+                {totalUserCount}
+              </Text>
+              <ThreeUser style={[style.svg, {top: 76}]} />
+            </View>
+          </TouchableOpacity>
+        )}
+        {auth.role != 'CLIENT' && (
+          <TouchableOpacity
+            style={[style.onerow, {backgroundColor: '#FEF1F1'}]}>
+            <View>
+              <Text style={style.boxText}>Total Client</Text>
+              <Text style={[style.insideboxtext, {color: '#FF4B4B'}]}>
+                {clientCount}
+              </Text>
+              <RoundView color={'#FF4B4B'} />
+              <Friend style={style.svg} />
+            </View>
+          </TouchableOpacity>
+        )}
+        {auth.role != 'CLIENT' && (
+          <TouchableOpacity
+            style={[style.onerow, {backgroundColor: '#FFE3C1'}]}>
+            <View>
+              <Text style={style.boxText}>Total Admin</Text>
+              <RoundView color={'#AD6510'} />
+              <Text style={[style.insideboxtext, {color: '#AD6510'}]}>
+                {adminCount}
+              </Text>
+              <Adduser style={style.svg} />
+            </View>
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity
           onPress={() => navigation.navigate('Task')}
           style={[style.onerow, {backgroundColor: '#F3EDFF'}]}>
@@ -230,6 +241,7 @@ export function HomePage() {
             <Document style={style.svg} />
           </View>
         </TouchableOpacity>
+
         <TouchableOpacity
           onPress={() => navigation.navigate('pendingTask')}
           style={[style.onerow, {backgroundColor: '#FFF8E8'}]}>
@@ -242,6 +254,7 @@ export function HomePage() {
             <Upload style={style.svg} />
           </View>
         </TouchableOpacity>
+
         <TouchableOpacity
           onPress={() => navigation.navigate('completedTask')}
           style={[style.onerow, {backgroundColor: '#E8FAF2'}]}>
@@ -319,17 +332,19 @@ export function HomePage() {
               />
             </View>
             <View style={{marginTop: 10}}>
-              <InputTextComponent
-                onchange={value => {
-                  setFilter(prev => {
-                    return {...prev, location: value};
-                  });
-                }}
-                TextUpper={'Location'}
-                placeHolder={'Enter Location'}
-                value={filter.location}
-                upperFont={{fontWeight: '500', marginLeft: 10, fontSize: 16}}
-              />
+              {auth.role != 'CLIENT' && (
+                <InputTextComponent
+                  onchange={value => {
+                    setFilter(prev => {
+                      return {...prev, location: value};
+                    });
+                  }}
+                  TextUpper={'Location'}
+                  placeHolder={'Enter Location'}
+                  value={filter.location}
+                  upperFont={{fontWeight: '500', marginLeft: 10, fontSize: 16}}
+                />
+              )}
               <ButtonComponent
                 title={'Apply'}
                 onPresscomponent={() => {

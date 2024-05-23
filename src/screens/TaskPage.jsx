@@ -2,10 +2,12 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -13,8 +15,10 @@ import {style} from './UserManagement';
 import Download from '../images/svg/Download';
 import Filter from '../images/svg/FilterBlack';
 import Vector from '../images/svg/Vector';
+import RNFetchBlob from 'rn-fetch-blob';
 import XLSX from 'xlsx';
-import { decode } from 'react-native-base64';
+import {decode} from 'base64-arraybuffer';
+import RNFS from 'react-native-fs';
 
 // import FileSaver from 'file-saver'
 
@@ -79,33 +83,46 @@ export function TaskPage({route}) {
   const [toDate, setToDate] = useState(new Date());
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleTo, setModalVisibleTo] = useState(false);
+  
 
-  const ExportToExcel = (base64Data, fileName) => {
+  const downloadFiles = async (base64Data, fileName) => {
+    // Decode base64 string to binary buffer
+    const binaryData = decode(base64Data);
+
+    // Create workbook from binary buffer
+    const workbook = XLSX.read(binaryData, {type: 'array', cellDates: true});
+
+    // Write workbook to file
     const fileType =
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const fileExtension = '.xlsx';
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'base64',
+    });
+    let filePath = `${RNFS.DownloadDirectoryPath}/${fileName}`;
+    let fileExists = await RNFS.exists(filePath);
 
-    // Decode base64 string to binary data
-    const binaryData = decode(base64Data, 'base64');
-
-    // Convert binary data to array buffer
-    const arrayBuffer = new ArrayBuffer(binaryData.length);
-    const uint8Array = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < binaryData.length; i++) {
-      uint8Array[i] = binaryData.charCodeAt(i);
+    // If file exists, generate a new file name
+    if (fileExists) {
+      const timestamp = new Date().getTime();
+      newFileName = `${timestamp}_${fileName}`;
+      filePath = `${RNFS.DownloadDirectoryPath}/${newFileName}`;
     }
-    // Create XLSX workbook from array buffer
-    const wb = XLSX.read(uint8Array, {type: 'array'});
 
-    // Generate Blob from workbook
-    const excelBuffer = XLSX.write(wb, {bookType: 'xlsx', type: 'array'});
-    const data = new Blob([excelBuffer], {type: fileType});
-
-    FileSaver.saveAs(data, fileName + fileExtension);
+    try {
+      RNFetchBlob.fs.writeFile(filePath, excelBuffer, 'base64');
+      console.log('File saved successfully:', filePath);
+      if (Platform.OS == 'android') {
+        ToastAndroid.show('File saved successfully', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.error('Error saving file:', error);
+    }
   };
 
   const downloadFile = async () => {
     try {
+      setLoader(true)
       const URL = BUSINESS_ENDPOINTS.DOWNLOAD_REPORT;
       const BODY = JSON.stringify({
         concept: filterdData.concept,
@@ -118,9 +135,11 @@ export function TaskPage({route}) {
         fromDate:
           filterdData.fromDate == 'From' ? '0001-01-01' : filterdData.fromDate,
       });
+    
       const response = await axiosIntercepted.post(URL, BODY);
-
-      ExportToExcel(response.data, 'excelreport');
+      
+      downloadFiles(response.data, 'excelreport.xlsx');
+      setLoader(false)
     } catch (err) {
       console.log(err);
     }
@@ -177,6 +196,7 @@ export function TaskPage({route}) {
     return (
       <View style={styles.view}>
         <BoxView
+          disableEdit={res.status=='COMPLETED'?true:false}
           navig={() => navigation.navigate('viewTask', {task: res})}
           Header={res.concept}
           Subheader={res.maintenanceWork}

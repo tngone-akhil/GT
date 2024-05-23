@@ -19,7 +19,9 @@ export const InputTextComponent = ({
   isEditable = true,
   multiLine = false,
   isPassword = false,
-  errorComponent = false
+  errorComponent = false,
+  errorText,
+  keyboardType
 }) => {
   const [eyeVisible, setEyeVisible] = useState(true);
   const [textVisible, setTextVisible] = useState(false);
@@ -34,6 +36,7 @@ export const InputTextComponent = ({
       <Text style={[style.text, upperFont]}>{TextUpper}</Text>
       <View>
         <TextInput
+        keyboardType={keyboardType}
           style={[
             style.textbox,
             {
@@ -62,7 +65,7 @@ export const InputTextComponent = ({
           </TouchableOpacity>
         )}
       </View>
-     {errorComponent && <Text style={{position:'absolute', top:15,left:5,color:'red'}}>enter a valid Credential</Text>}
+     {errorComponent && <Text style={{position:'absolute', top:15,left:5,color:'red'}}>{errorText}</Text>}
     </View>
   );
 };

@@ -72,6 +72,7 @@ export function EditTaskScreen() {
   const [responsibility, setResponsibilty] = useState(task.responsibility);
   const [priority, setPriority] = useState(task?.priority);
   const [loader, setLoader] = useState(false);
+  const [edit,setEdit] = useState(false)
 
   const navigation = useNavigation();
 
