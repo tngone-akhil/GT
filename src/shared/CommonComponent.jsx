@@ -107,9 +107,9 @@ function NotificationBox({notificationhalf, notification, details}) {
   );
 }
 
-function TouchableOpacityTextbox({onpress, value, isClock = false}) {
+function TouchableOpacityTextbox({onpress, value, isClock = false,color}) {
   return (
-    <TouchableOpacity style={style.touchableOpacity} onPress={onpress}>
+    <TouchableOpacity style={[style.touchableOpacity,{backgroundColor:color}]} onPress={onpress}>
       <View
         style={{
           flex: 1,

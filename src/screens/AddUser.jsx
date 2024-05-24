@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,6 +16,7 @@ import {DropDownComponent} from '../shared/DropDownComponenet';
 import {useNavigation} from '@react-navigation/native';
 import {AUTH_ENDPOINTS} from '../services/constants';
 import {axiosIntercepted} from '../services';
+import {validPhone, validateEmail} from '../utlis/helpers';
 
 const roles = [
   {label: 'Admin', value: 'ADMIN'},
@@ -26,47 +27,79 @@ export function AddUser() {
   const navigation = useNavigation();
   const [locationOn, setLocationOn] = useState(true);
   const [headQuaterOn, setHeadQuaterOn] = useState(false);
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
-  const [location, setLocation] = useState();
-  const [role, setRole] = useState();
+  const [user, setUser] = useState({
+    name: null,
+    email: null,
+    phone: null,
+    location: null,
+    role: null,
+  });
+  const [emailValid, setEmailValid] = useState(false);
+  const [phoneValid, setphoneValid] = useState(false);
+  const [nameValid, setnameValid] = useState(false);
+  const [roleValid, setRoleValid] = useState(false);
+  const [locationValid, setLocationValid] = useState(false);
+
   const [loader, setLoader] = useState(false);
+
   const [submit, setSubmit] = useState(false);
-  const [empty, setEmpty] = useState(false);
+
+  const validation = () => {
+    let flag = false;
+    if (!user.name) {
+      setnameValid(true);
+      flag = true;
+    }
+    if (!validateEmail(user.email)) {
+      setEmailValid(true);
+      flag = true;
+    }
+    if (!validPhone(user.phone)) {
+      setphoneValid(true);
+      flag = true;
+    }
+    if (!user.location) {
+      setLocationValid(true);
+      flag = true;
+    }
+    if (!user.role) {
+      setRoleValid(true);
+      flag = true;
+    }
+    if (flag) {
+      return;
+    } else {
+      saveUser();
+    }
+  };
 
   const saveUser = async () => {
     setSubmit(true);
-    const valid = validation();
-    console.log(valid);
-    if (!valid) return;
-    try {
-      setLoader(true);
-      const URL = AUTH_ENDPOINTS.ADD_USER;
-      const BODY = JSON.stringify({
-        name: name,
-        email: email,
-        phoneNumber: phone,
-        location: location,
-        role: role,
-      });
-      const response = await axiosIntercepted.post(URL, BODY);
-      setLoader(false);
-      setSubmit(false);
-      navigation.navigate('User');
-    } catch (err) {
-      console.log(err);
+
+    if (!validateEmail(user.email)) {
+      setEmailValid(true);
+    } else {
+      try {
+        setLoader(true);
+        const URL = AUTH_ENDPOINTS.ADD_USER;
+        const BODY = JSON.stringify({
+          name: user.name,
+          email: user.email,
+          phoneNumber: user.phone,
+          location: user.location,
+          role: user.role,
+        });
+        const response = await axiosIntercepted.post(URL, BODY);
+        setLoader(false);
+        setSubmit(false);
+        navigation.navigate('User');
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
-  const validation = () => {
-    if (name == null) {
-      setEmpty(true)
-      return false;
-    }
-    return true;
-  };
-
+  console.log(emailValid);
   return (
     <SafeAreaView style={style.Container}>
       {loader && <Loader />}
@@ -74,25 +107,43 @@ export function AddUser() {
       <ScrollView>
         <View>
           <InputTextComponent
-            errorComponent={empty}
+            errorComponent={nameValid}
             upperFont={stylesall.fontStyle}
             TextUpper={'Name'}
-            value={name}
-            onchange={e => setName(e)}
+            value={user.name}
+            onchange={e => {
+              setnameValid(false);
+              setUser(prev => {
+                return {...prev, name: e};
+              });
+            }}
             placeHolder={'Enter the Name'}
           />
           <InputTextComponent
+            errorComponent={emailValid}
             upperFont={stylesall.fontStyle}
             TextUpper={'Email'}
-            value={email}
-            onchange={e => setEmail(e)}
+            value={user.email}
+            onchange={e => {
+              setEmailValid(false);
+              setUser(prev => {
+                return {...prev, email: e};
+              });
+            }}
             placeHolder={'Enter the Email'}
           />
           <InputTextComponent
+            keyboardType={'numeric'}
+            errorComponent={phoneValid}
             upperFont={stylesall.fontStyle}
             TextUpper={'Phone'}
-            value={phone}
-            onchange={e => setPhone(e)}
+            value={user.phone}
+            onchange={e => {
+              setphoneValid(false);
+              setUser(prev => {
+                return {...prev, phone: e};
+              });
+            }}
             placeHolder={'Enter the Phone Number'}
           />
           <View
@@ -134,19 +185,30 @@ export function AddUser() {
             </TouchableOpacity>
           </View>
           <InputTextComponent
-            onchange={e => setLocation(e)}
-            placeHolder={'Enter the Name'}
+            errorComponent={locationValid}
+            value={user.location}
+            onchange={e => {
+              setLocationValid(false);
+              setUser(prev => {
+                return {...prev, location: e};
+              });
+            }}
+            placeHolder={'Enter the Location'}
           />
           <DropDownComponent
             upperText={'Role'}
+            error={roleValid}
             placeholder={'Select Role'}
             data={roles}
-            functionality={value => {
-              setRole(value);
+            functionality={e => {
+              setRoleValid(false);
+              setUser(prev => {
+                return {...prev, role: e};
+              });
             }}
           />
           <ButtonComponent
-            onPresscomponent={saveUser}
+            onPresscomponent={validation}
             buttonStyle={stylesall.button}
             textStyle={stylesall.textLogin}
             title={'Submit'}

@@ -11,46 +11,47 @@ import {InputTextComponent} from '../shared/InputTextComponent';
 import {ButtonComponent} from '../shared/ButtonComponent';
 import {commonStyles} from '../utlis/helpers';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import { AUTH_ENDPOINTS } from '../services/constants';
-import { axiosBase } from '../services';
+import {AUTH_ENDPOINTS} from '../services/constants';
+import {axiosBase} from '../services';
 
 export function ChangePassword() {
   const navigation = useNavigation();
   const route = useRoute();
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState('');
   const [textBoxError, setTextBoxError] = useState(false);
+  const [textError, setTextError] = useState(false);
   const {userId} = route.params;
 
   const Checking = () => {
-  
-    if (password != confirmPassword) {
+    if (password == null) {
+      setTextError(true);
+     
+    } else if (password != confirmPassword) {
+      setTextError(false)
       setTextBoxError(true);
     } else {
-      changePassword()
+      changePassword();
     }
   };
 
-  const changePassword = async() =>{
-    try{
-      const URL = AUTH_ENDPOINTS.CHANGE_PASSWORD
-      console.log(URL)
-      const BODY = JSON.stringify(
-        {
-          password: password,
-          confirmPassword: confirmPassword,
-          userId: userId
-        }
-      )
-      const response = await axiosBase.post(URL,BODY)
-      console.log(response.data)
-      navigation.navigate('login')
-    
-    }catch(err){
-      console.log(err)
+  const changePassword = async () => {
+    try {
+      setTextError(false)
+      const URL = AUTH_ENDPOINTS.CHANGE_PASSWORD;
+      console.log(URL);
+      const BODY = JSON.stringify({
+        password: password,
+        confirmPassword: confirmPassword,
+        userId: userId,
+      });
+      const response = await axiosBase.post(URL, BODY);
+      console.log(response.data);
+      navigation.navigate('login');
+    } catch (err) {
+      console.log(err);
     }
-
-  }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={{}} behavior="position">
@@ -71,12 +72,14 @@ export function ChangePassword() {
         </View>
         <InputTextComponent
           TextUpper={'New Password'}
+          errorComponent={textError}
           placeHolder={'######'}
           value={password}
           onchange={setPassword}></InputTextComponent>
         <InputTextComponent
           TextUpper={'Confirm Password'}
           placeHolder={'######'}
+          errorComponent={textBoxError}
           value={confirmPassword}
           onchange={setConfirmPassword}></InputTextComponent>
         <ButtonComponent

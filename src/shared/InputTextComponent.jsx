@@ -42,7 +42,7 @@ export const InputTextComponent = ({
             {
               backgroundColor: !isEditable ? '#ECECEC' : 'white',
               height: multiLine ? 100 : 45,
-              borderColor:!errorComponent ? '#808080':'red',
+              borderColor: !errorComponent ? '#808080':'red',
               
             },
           ]}
@@ -65,7 +65,7 @@ export const InputTextComponent = ({
           </TouchableOpacity>
         )}
       </View>
-     {errorComponent && <Text style={{position:'absolute', top:15,left:5,color:'red'}}>{errorText}</Text>}
+     {errorComponent && <Text style={{color:'red',marginLeft:'4%'}}>{errorText}</Text>}
     </View>
   );
 };

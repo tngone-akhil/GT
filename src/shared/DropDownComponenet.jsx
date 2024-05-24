@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import DownArrow from  '../images/svg/DownArrow.svg'
+import DownArrow from '../images/svg/DownArrow.svg';
 
 export function DropDownComponent({
   upperText,
@@ -9,21 +9,25 @@ export function DropDownComponent({
   functionality,
   data = [],
   placeholder,
-  val
-
+  val,
+  error = false,
 }) {
   return (
-    <View style={{marginLeft: 10,marginTop:5}}>
-      <Text style={[upperTextStyle,{color:'black',fontWeight:'500'}]}>{upperText}</Text>
+    <View style={{marginLeft: 10, marginTop: 5}}>
+      <Text style={[upperTextStyle, {color: 'black', fontWeight: '500'}]}>
+        {upperText}
+      </Text>
       <RNPickerSelect
         useNativeAndroidPickerStyle={false}
         value={val}
-        style={pickerSelectStyles}
+        style={!error?pickerSelectStyles:pickerErrorStyle}
         items={data}
         onValueChange={functionality}
         placeholder={{label: placeholder, value: null}}
       />
-      <View style={{position:'absolute',right:15,top:38}}><DownArrow/></View>
+      <View style={{position: 'absolute', right: 15, top: 38}}>
+        <DownArrow />
+      </View>
     </View>
   );
 }
@@ -41,7 +45,7 @@ const pickerSelectStyles = StyleSheet.create({
 
   inputAndroid: {
     fontSize: 14,
-    width:'98%',
+    width: '98%',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 20,
@@ -51,6 +55,33 @@ const pickerSelectStyles = StyleSheet.create({
     marginVertical: 6,
     borderWidth: 1,
     borderColor: 'grey',
+    color: 'black',
+  },
+});
+
+const pickerErrorStyle = StyleSheet.create({
+  inputIOS: {
+    fontSize: 14,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    height: 45,
+    alignItems: 'center',
+    marginVertical: 6,
+    borderWidth: 1,
+  },
+
+  inputAndroid: {
+    fontSize: 14,
+    width: '98%',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    height: 45,
+    alignItems: 'center',
+    borderRadius: 10,
+    marginVertical: 6,
+    borderWidth: 1,
+    borderColor: 'red',
     color: 'black',
   },
 });

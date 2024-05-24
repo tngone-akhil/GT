@@ -35,11 +35,13 @@ export function OtpVerification() {
         email: Email,
         code: otp,
       });
+      console.log(BODY)
       const response = await axiosBase.post(URL, BODY);
       const result = response.data;
       setLoader(false);
+      console.log(result)
   
-      if (result.isSuccess == "true") {
+      if (result.isSuccess == true) {
         navigation.navigate('changepassword', {userId: result.userId});
       }else{
         ToastAndroid.show("OTP is Wrong",ToastAndroid.SHORT)

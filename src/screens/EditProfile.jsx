@@ -25,6 +25,7 @@ export function EditProfile() {
     try {
       setLoader(true);
       const URL = BUSINESS_ENDPOINTS.GET_USER + `/${auth.userId}`;
+      console.log(URL)
       const response = await axiosIntercepted(URL);
       setUser(response.data);
       setName(response.data.userName);
@@ -67,7 +68,7 @@ export function EditProfile() {
           <InputTextComponent
             upperFont={styles.fontStyle}
             TextUpper={'Name'}
-            placeHolder={name}
+            placeHolder={auth.username}
             value={name}
             onchange={value => setName(value)}
           />
@@ -83,7 +84,7 @@ export function EditProfile() {
           <InputTextComponent
             upperFont={styles.fontStyle}
             TextUpper={'email'}
-            placeHolder={user?.email}
+            placeHolder={auth.email}
             isEditable={false}
           />
           <InputTextComponent
@@ -95,7 +96,7 @@ export function EditProfile() {
           <InputTextComponent
             upperFont={styles.fontStyle}
             TextUpper={'Role'}
-            placeHolder={user?.userType}
+            placeHolder={auth.role}
             isEditable={false}
           />
           <ButtonComponent

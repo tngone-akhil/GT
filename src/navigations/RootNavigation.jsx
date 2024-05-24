@@ -23,6 +23,7 @@ import {UpdatePassword} from '../screens/UpdatePassword';
 import {useAuth} from '../context/AuthContext';
 import {EditUser} from '../screens/EditUser';
 import {BottomNavigatorAdmin} from './BotttomNavigatorAdmin';
+import { EditTaskScreenClient } from '../screens/editTaskClient';
 
 const Stack = createNativeStackNavigator();
 
@@ -85,6 +86,11 @@ const HomeNavigator = () => {
           <Stack.Screen
             name="completedTask"
             component={CompletedTask}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="editTaskClient"
+            component={EditTaskScreenClient}
             options={{headerShown: false}}
           />
           <Stack.Screen

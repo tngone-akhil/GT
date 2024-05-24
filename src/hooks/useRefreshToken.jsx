@@ -10,18 +10,20 @@ const useRefreshToken = () => {
     const response = await axiosBase.post(REFRESH_URL, {
       authToken: auth.accessToken,
     });
+    console.log(auth)
     let newRefreshToken = null;
     try {
       if (!response.data.success || response.data.isReAuthRequired) {
         throw new Error('Log out');
       }
       newRefreshToken = response.data.token;
+      console.log(newRefreshToken)
 
       setAuth(prev => {
         return {...prev, refreshToken: response.data.token};
       });
     } catch {
-      setAuth({});
+      // setAuth({});
     }
 
     return newRefreshToken;

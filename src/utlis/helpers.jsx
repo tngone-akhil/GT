@@ -1,9 +1,7 @@
-
 import React from 'react';
-import { SECURE_STORAGE_KEYS } from './constants';
+import {SECURE_STORAGE_KEYS} from './constants';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { StyleSheet } from 'react-native';
-
+import {StyleSheet} from 'react-native';
 
 async function storeUserSession({user}) {
   try {
@@ -38,6 +36,20 @@ async function retrieveAppTheme(mode) {
     return Promise.reject(error);
   }
 }
+export function validateEmail(email) {
+  // eslint-disable-next-line no-useless-escape
+  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    return true;
+  }
+  return false;
+}
+
+export function validPhone(phone){
+  if(phone.length == 10){
+    return true
+  }
+  return false
+}
 
 // async function retrieveAppTheme(setIsDarkMode) {
 //   try {
@@ -56,7 +68,6 @@ async function removeUserSession() {
   }
 }
 
-
 const commonStyles = StyleSheet.create({
   button: {
     backgroundColor: '#2051E5',
@@ -65,12 +76,18 @@ const commonStyles = StyleSheet.create({
     borderRadius: 30,
     marginTop: 80,
   },
-  textInButton:{
-    color : 'white',
-    padding : 13,
-    paddingLeft : 160,
-    fontWeight : '500',
-    fontSize : 20
+  textInButton: {
+    color: 'white',
+    padding: 13,
+    paddingLeft: 160,
+    fontWeight: '500',
+    fontSize: 20,
   },
-})
-export {retrieveAppTheme,commonStyles,removeUserSession,retrieveUserSession,storeUserSession}
+});
+export {
+  retrieveAppTheme,
+  commonStyles,
+  removeUserSession,
+  retrieveUserSession,
+  storeUserSession,
+};

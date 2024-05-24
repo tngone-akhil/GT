@@ -25,7 +25,7 @@ export function NotificationPage() {
     try {
       setRefresh(true);
       const URL = BUSINESS_ENDPOINTS.GET_NOTIFICATION;
-      const response = await axiosIntercepted.post(URL);
+      const response = await axiosIntercepted.get(URL);
       setData(response.data.notificationList);
       setRefresh(false);
     } catch (err) {

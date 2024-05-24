@@ -174,6 +174,7 @@ export function EditTaskScreen() {
       <Header header={'Edit Task'} />
       <ScrollView>
         <View>
+          
           <Text style={styles.fontStyle}>Concern Closing Date</Text>
           <TouchableOpacityTextbox
             onpress={() => {
@@ -181,6 +182,7 @@ export function EditTaskScreen() {
             }}
             value={closedDatePlaceHolder}
           />
+
 
           <Text style={styles.fontStyle}>Closed Time</Text>
           <TouchableOpacityTextbox
@@ -190,6 +192,7 @@ export function EditTaskScreen() {
             isClock={true}
             value={closedTimePlaceHolder}
           />
+
 
           <InputTextComponent
             upperFont={styles.textUpper}
@@ -250,7 +253,7 @@ export function EditTaskScreen() {
             TextUpper={'Responsibility'}
             placeHolder={responsibility}
             value={responsibility}
-            onchange={value => setLocation(value)}
+            onchange={value => setResponsibilty(value)}
           />
 
           <Text style={styles.fontStyle}>Concern Raised Date</Text>

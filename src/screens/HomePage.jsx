@@ -231,7 +231,7 @@ export function HomePage() {
 
         <TouchableOpacity
           onPress={() => navigation.navigate('Task')}
-          style={[style.onerow, {backgroundColor: '#F3EDFF'}]}>
+          style={[auth.role=='CLIENT' ? style.onefullrow :style.onerow, {backgroundColor: '#F3EDFF'}]}>
           <View>
             <Text style={style.boxText}>Total Task</Text>
             <RoundView color={'#7000FE'} />
@@ -404,6 +404,11 @@ const style = StyleSheet.create({
   },
   onerow: {
     width: '43%',
+    height: 125,
+    borderRadius: 20,
+  },
+  onefullrow: {
+    width: '91%',
     height: 125,
     borderRadius: 20,
   },

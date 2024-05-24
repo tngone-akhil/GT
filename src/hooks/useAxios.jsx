@@ -24,6 +24,7 @@ const useAxiosPrivate = () => {
       response => response,
       async error => {
         const prevRequest = error?.config;
+        console.log(prevRequest,error?.response?.status,"token")
         if (
           [401, 412].includes(error?.response?.status) &&
           !prevRequest?.sent

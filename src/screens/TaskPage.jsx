@@ -37,6 +37,7 @@ import {
 } from '@react-navigation/native';
 import {BUSINESS_ENDPOINTS} from '../services/constants';
 import {axiosIntercepted} from '../services';
+import {useAuth} from '../context/AuthContext';
 
 const nullFilter = {
   concept: '',
@@ -83,7 +84,7 @@ export function TaskPage({route}) {
   const [toDate, setToDate] = useState(new Date());
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleTo, setModalVisibleTo] = useState(false);
-  
+  const {auth} = useAuth();
 
   const downloadFiles = async (base64Data, fileName) => {
     // Decode base64 string to binary buffer
@@ -122,7 +123,7 @@ export function TaskPage({route}) {
 
   const downloadFile = async () => {
     try {
-      setLoader(true)
+      setLoader(true);
       const URL = BUSINESS_ENDPOINTS.DOWNLOAD_REPORT;
       const BODY = JSON.stringify({
         concept: filterdData.concept,
@@ -135,11 +136,11 @@ export function TaskPage({route}) {
         fromDate:
           filterdData.fromDate == 'From' ? '0001-01-01' : filterdData.fromDate,
       });
-    
+
       const response = await axiosIntercepted.post(URL, BODY);
-      
+
       downloadFiles(response.data, 'excelreport.xlsx');
-      setLoader(false)
+      setLoader(false);
     } catch (err) {
       console.log(err);
     }
@@ -196,14 +197,18 @@ export function TaskPage({route}) {
     return (
       <View style={styles.view}>
         <BoxView
-          disableEdit={res.status=='COMPLETED'?true:false}
+          disableEdit={res.status == 'COMPLETED' ? true : false}
           navig={() => navigation.navigate('viewTask', {task: res})}
           Header={res.concept}
           Subheader={res.maintenanceWork}
           status={res.status}
           Date={res.approvedQuotationDate}
           Place={res.location}
-          Function={() => navigation.navigate('editTask', {task: res})}
+          Function={() =>
+            auth.role == 'CLIENT'
+              ? navigation.navigate('editTaskClient', {task: res})
+              : navigation.navigate('editTask', {task: res})
+          }
         />
       </View>
     );
@@ -439,11 +444,13 @@ export function TaskPage({route}) {
           })} */}
       {/* </View> */}
       {/* </ScrollView> */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate('addTask')}
-        style={[style.addButton, {bottom: 70}]}>
-        <Vector style={{position: 'relative', top: 17, left: 18}} />
-      </TouchableOpacity>
+      {auth.role != 'CLIENT' && (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('addTask')}
+          style={[style.addButton, {bottom: 70}]}>
+          <Vector style={{position: 'relative', top: 17, left: 18}} />
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 }
