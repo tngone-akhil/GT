@@ -88,7 +88,7 @@ function UserBox({name, email, deleteFunction,role,edit,}) {
   );
 }
 
-function NotificationBox({notificationhalf, notification, details}) {
+function NotificationBox({notificationhalf, notification, details,readable}) {
   return (
     <TouchableOpacity>
       <View style={style.notificationView}>
@@ -96,7 +96,7 @@ function NotificationBox({notificationhalf, notification, details}) {
           <Notification />
         </View>
         <View style={{marginLeft: 15}}>
-          <Text style={style.notiText}>
+          <Text style={readable ? style.notiText : style.unNotiText}>
             {notification}
             <Text style={{fontWeight: '400'}}> {notificationhalf}</Text>
           </Text>
@@ -276,6 +276,12 @@ const style = StyleSheet.create({
   },
   notiText: {
     color: 'black',
+    fontSize: 17,
+    marginBottom: 7,
+    fontWeight: 'bold',
+  },
+  unNotiText: {
+    color: 'gray',
     fontSize: 17,
     marginBottom: 7,
     fontWeight: 'bold',

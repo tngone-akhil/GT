@@ -44,7 +44,7 @@ export function NotificationPage() {
           {data.map((item, index) => {
             return (
               <NotificationBox
-
+              readable={item.isRead}
               notification={item.message}
               details={item.createdDate}
               key={index}/>

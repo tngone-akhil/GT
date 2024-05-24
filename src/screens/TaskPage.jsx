@@ -84,6 +84,9 @@ export function TaskPage({route}) {
   const [toDate, setToDate] = useState(new Date());
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleTo, setModalVisibleTo] = useState(false);
+  const [pageNo, setPageNo] = useState(0);
+  const [row, setRow] = useState(5);
+  const [paging,setPaging] = useState(true)
   const {auth} = useAuth();
 
   const downloadFiles = async (base64Data, fileName) => {
@@ -121,6 +124,11 @@ export function TaskPage({route}) {
     }
   };
 
+  const callNextPage = () => {
+    if(paging){
+    GetAllTask(true);
+    }
+  };
   const downloadFile = async () => {
     try {
       setLoader(true);
@@ -214,8 +222,9 @@ export function TaskPage({route}) {
     );
   };
 
-  const GetAllTask = async () => {
+  const GetAllTask = async (paging = false) => {
     try {
+      const pageno = !paging ? 0 : pageNo + 1;
       setLoader(true);
       const URL = BUSINESS_ENDPOINTS.GETALLTASK;
 
@@ -229,10 +238,18 @@ export function TaskPage({route}) {
         toDate: filterdData.toDate == 'To' ? '0001-01-01' : filterdData.toDate,
         fromDate:
           filterdData.fromDate == 'From' ? '0001-01-01' : filterdData.fromDate,
+        pageNumber: pageno,
+        rowsPerPage: row,
       });
       const response = await axiosIntercepted.post(URL, BODY);
       const result = response.data;
-      setData(result);
+      setPageNo(pageno)
+      if(result.length<row){
+        setPaging(false)
+      }else{
+        setPaging(true)
+      }
+      setData(data.concat(result));
       setLoader(false);
     } catch (err) {
       setLoader(false);
@@ -258,6 +275,7 @@ export function TaskPage({route}) {
       </View>
 
       <FlatList
+        onEndReached={callNextPage}
         style={{backgroundColor: '#F2F4FF'}}
         data={data}
         renderItem={renderItem}

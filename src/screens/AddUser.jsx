@@ -30,7 +30,7 @@ export function AddUser() {
   const [user, setUser] = useState({
     name: null,
     email: null,
-    phone: null,
+    phone: '',
     location: null,
     role: null,
   });
@@ -107,6 +107,7 @@ export function AddUser() {
       <ScrollView>
         <View>
           <InputTextComponent
+            errorText={'Please enter the Name'}
             errorComponent={nameValid}
             upperFont={stylesall.fontStyle}
             TextUpper={'Name'}
@@ -120,6 +121,7 @@ export function AddUser() {
             placeHolder={'Enter the Name'}
           />
           <InputTextComponent
+            errorText={'Enter the valid email'}
             errorComponent={emailValid}
             upperFont={stylesall.fontStyle}
             TextUpper={'Email'}
@@ -133,6 +135,7 @@ export function AddUser() {
             placeHolder={'Enter the Email'}
           />
           <InputTextComponent
+            errorText={'Enter the valid Phone'}
             keyboardType={'numeric'}
             errorComponent={phoneValid}
             upperFont={stylesall.fontStyle}
@@ -185,6 +188,7 @@ export function AddUser() {
             </TouchableOpacity>
           </View>
           <InputTextComponent
+            errorText={'Enter the valid Location'}
             errorComponent={locationValid}
             value={user.location}
             onchange={e => {

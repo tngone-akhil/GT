@@ -13,7 +13,7 @@ const useAxiosPrivate = () => {
         if (!config.headers['AUTHKEY']) {
           config.headers['AUTHKEY'] = `${auth?.refreshToken}`;
         }
-      //  console.log(config)
+       console.log(config)
         return config;
       },
       // eslint-disable-next-line no-undef

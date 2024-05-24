@@ -8,9 +8,8 @@ import {
   View,
 } from 'react-native';
 import {style} from './UserManagement';
-import Arrow from '../images/svg/arrow';
 import {InputTextComponent} from '../shared/InputTextComponent';
-import {Header, RemarkBox} from '../shared/CommonComponent';
+import {BoxView, Header, RemarkBox} from '../shared/CommonComponent';
 
 import {useRoute} from '@react-navigation/native';
 
@@ -99,6 +98,8 @@ export function ViewTaskPage() {
             placeHolder={task.actionPlan}
             isEditable={false}
           />
+          <Text style={{margin:10,fontWeight:'500',color:'black',fontSize:16}}>Remark</Text>
+          <RemarkBox  message={task.actionPlan}/>
          
         </View>
       </ScrollView>

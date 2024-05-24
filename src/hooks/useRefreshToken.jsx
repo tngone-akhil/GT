@@ -23,7 +23,7 @@ const useRefreshToken = () => {
         return {...prev, refreshToken: response.data.token};
       });
     } catch {
-      // setAuth({});
+      setAuth({});
     }
 
     return newRefreshToken;

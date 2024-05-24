@@ -12,19 +12,23 @@ import {
 } from 'react-native';
 import OTPTextInput from 'react-native-otp-textinput';
 
+
+
 import {ButtonComponent} from '../shared/ButtonComponent';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {AUTH_ENDPOINTS} from '../services/constants';
 import {axiosBase, axiosIntercepted} from '../services';
 import {Loader} from '../shared/CommonComponent';
+import CountDown from 'react-native-countdown-component';
 
 export function OtpVerification() {
   const navigation = useNavigation();
   const route = useRoute();
+  const [counter, SetCounter] = useState(90);
+  const [random, SetRandom] = useState(Math.random());
   const [otp, setOtp] = useState('');
-  const [minutes, setminutes] = useState(1);
-  const [seconds, setSeconds] = useState(59);
   const [loader, setLoader] = useState(false);
+  const [resendOTP,setResendOTP] = useState(false)
   const {Email} = route.params;
 
   const Send = async () => {
@@ -35,25 +39,25 @@ export function OtpVerification() {
         email: Email,
         code: otp,
       });
-      console.log(BODY)
+      console.log(BODY);
       const response = await axiosBase.post(URL, BODY);
       const result = response.data;
       setLoader(false);
-      console.log(result)
-  
+      console.log(result);
+
       if (result.isSuccess == true) {
         navigation.navigate('changepassword', {userId: result.userId});
-      }else{
-        ToastAndroid.show("OTP is Wrong",ToastAndroid.SHORT)
+      } else {
+        ToastAndroid.show('OTP is Wrong', ToastAndroid.SHORT);
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  function resend() {
-    setminutes(1);
-    setSeconds(59);
+  const resend = () => {
+    SetRandom(Math.random())
+    setResendOTP(false)
     resendOtp();
   }
   const resendOtp = async () => {
@@ -61,18 +65,7 @@ export function OtpVerification() {
     const response = await axiosBase.get(URL);
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
-      } else if (seconds == 0) {
-        if (minutes > 0) {
-          setminutes(minutes - 1);
-          setSeconds(59);
-        }
-      }
-    }, 1000);
-  }, [seconds]);
+  
 
   return (
     <KeyboardAvoidingView
@@ -98,12 +91,28 @@ export function OtpVerification() {
                 OTP Verification
               </Text>
 
-              <View>
-                <Text style={{color: 'blue', fontWeight: '500', marginTop: 10}}>
-                  {minutes}:{seconds < 10 ? '0' : ''}
-                  {seconds}
-                </Text>
+              <View style={{}}>
+                <CountDown
+                  key={random}
+                  until={counter}
+                  size={15}
+                  onFinish={() => setResendOTP(true)}
+                  separatorStyle={{color: 'black',}}
+                  digitStyle={{backgroundColor: '#FFF'}}
+                  digitTxtStyle={{color: 'blue'}}
+                  timeToShow={['M', 'S']}
+                  showSeparator
+                  timeLabels={{m: '', s: ''}}
+                />
               </View>
+
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  flexDirection: 'column',
+                  alignSelf: 'center',
+                }}></View>
               <View>
                 <OTPTextInput
                   inputCount={6}
@@ -120,13 +129,11 @@ export function OtpVerification() {
               <Text style={{color: 'black'}}>
                 I didnt't receive any code.
                 <TouchableOpacity
-                  onPress={() => {
-                    resend();
-                  }}
-                  disabled={seconds > 0 || minutes > 0}>
+                  onPress={resend}
+                  disabled={!resendOTP}>
                   <Text
                     style={{
-                      color: minutes > 0 || seconds > 0 ? 'grey' : 'blue',
+                      color: !resendOTP ? 'grey' : 'blue',
                       position: 'absolute',
                       top: -15,
                     }}>
