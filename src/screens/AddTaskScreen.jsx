@@ -9,7 +9,7 @@ import {DropDownComponent} from '../shared/DropDownComponenet';
 import {ButtonComponent} from '../shared/ButtonComponent';
 import {BUSINESS_ENDPOINTS} from '../services/constants';
 import {axiosIntercepted} from '../services';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 let Priority = [
   {label: 'P1', value: 'P1'},
@@ -26,6 +26,7 @@ let Status = [
 ];
 
 export function AddTaskScreen() {
+  const [submit, setSubmit] = useState(false);
   const navigation = useNavigation();
   const [raisedDatePlaceHolder, setRaisedDatePlaceHolder] =
     useState('Raised Date');
@@ -56,6 +57,7 @@ export function AddTaskScreen() {
   const [responsibility, setResponsibilty] = useState('');
 
   const save = async () => {
+    setSubmit(true);
     try {
       const URL = BUSINESS_ENDPOINTS.CREATE_TASK;
       const BODY = JSON.stringify({
@@ -72,9 +74,9 @@ export function AddTaskScreen() {
         approvedQuotationDate: quationPlaceString,
         actionPlan: actionPlan,
       });
-   
+
       const response = await axiosIntercepted.post(URL, BODY);
-      navigation.goBack()
+      navigation.goBack();
     } catch (err) {
       console.log(err);
     }
@@ -121,6 +123,7 @@ export function AddTaskScreen() {
       <ScrollView>
         <View>
           <InputTextComponent
+            errorComponent={concept.trim && submit}
             upperFont={stylesall.textUpper}
             TextUpper={'Concept'}
             placeHolder={'Enter Your Concept'}
@@ -128,6 +131,7 @@ export function AddTaskScreen() {
             onchange={data => setConcept(data)}
           />
           <InputTextComponent
+            errorComponent={location.trim && submit}
             upperFont={stylesall.textUpper}
             TextUpper={'Location'}
             placeHolder={'Enter Your Location'}
@@ -135,6 +139,7 @@ export function AddTaskScreen() {
             onchange={data => setLocation(data)}
           />
           <InputTextComponent
+            errorComponent={maintenanceWork.trim && submit}
             upperFont={stylesall.textUpper}
             TextUpper={'Maintenance Work'}
             placeHolder={'Enter Maintenance Work'}
@@ -143,6 +148,7 @@ export function AddTaskScreen() {
             onchange={data => setMaintenanceWork(data)}
           />
           <InputTextComponent
+            errorComponent={poc.trim && submit}
             upperFont={stylesall.textUpper}
             TextUpper={'Person to Contact in Store name'}
             placeHolder={'Enter Person to contact'}
@@ -150,6 +156,7 @@ export function AddTaskScreen() {
             onchange={data => setPoc(data)}
           />
           <InputTextComponent
+            errorComponent={responsibility.trim && submit}
             upperFont={stylesall.textUpper}
             TextUpper={'Responsibility'}
             placeHolder={'Enter Responsibility'}
@@ -188,6 +195,7 @@ export function AddTaskScreen() {
           />
 
           <InputTextComponent
+            errorComponent={aging.trim && submit}
             upperFont={stylesall.textUpper}
             TextUpper={'Aging'}
             placeHolder={'Done'}
@@ -203,6 +211,7 @@ export function AddTaskScreen() {
           />
 
           <InputTextComponent
+            errorComponent={actionPlan.trim && submit}
             upperFont={stylesall.textUpper}
             TextUpper={'Action Plan'}
             multiLine={true}
