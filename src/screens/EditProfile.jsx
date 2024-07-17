@@ -25,14 +25,14 @@ export function EditProfile() {
     try {
       setLoader(true);
       const URL = BUSINESS_ENDPOINTS.GET_USER + `/${auth.userId}`;
-      console.log(URL)
+   
       const response = await axiosIntercepted(URL);
       setUser(response.data);
       setName(response.data.userName);
       setPhone(response.data.phoneNumber);
       setLoader(false);
     } catch (err) {
-      console.log(err);
+
       setLoader(false);
     }
   };
@@ -56,7 +56,7 @@ export function EditProfile() {
       setLoader(false)
       navigation.navigate('Settings');
     } catch (err) {
-      console.log(err);
+
     }
   };
   return (

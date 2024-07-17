@@ -40,7 +40,7 @@ export function CompletedTask() {
       setData(result);
       setLoader(false);
     } catch (err) {
-      console.log(err);
+
     }
   };
 

@@ -40,7 +40,7 @@ export function ForgetPassword() {
       navigation.navigate('otp', {Email: email});
       setLoader(false);
     } catch (err) {
-      console.log(err);
+
     }
   };
   return (

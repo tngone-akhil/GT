@@ -50,7 +50,6 @@ export function UpdatePassword() {
 
   const updatePassword = async () => {
     if (confirmChecking() || checkNewPassword()) {
-      console.log('error');
       ToastAndroid.show('something went wrong', ToastAndroid.SHORT);
       return;
     }
@@ -63,7 +62,7 @@ export function UpdatePassword() {
       const res = await axiosIntercepted.post(URL, BODY);
       navigation.navigate('Settings');
     } catch (err) {
-      console.log(err);
+
     }
   };
 

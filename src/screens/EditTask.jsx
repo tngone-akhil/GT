@@ -93,7 +93,7 @@ export function EditTaskScreen() {
       const response = await axiosIntercepted.post(URL, BODY);
       setTotalHours(response.data.totalHours);
     } catch (err) {
-      console.log(err);
+
     }
   };
 
@@ -122,7 +122,7 @@ export function EditTaskScreen() {
       setLoader(false);
       navigation.goBack();
     } catch (err) {
-      console.log(err);
+
       setLoader(false);
     }
   };

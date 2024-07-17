@@ -23,7 +23,7 @@ export function PendingTask() {
       setData(result);
       setLoader(false);
     } catch (err) {
-      console.log(err);
+
     }
   };
 

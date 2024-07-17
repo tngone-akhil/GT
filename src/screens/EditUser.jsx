@@ -26,9 +26,9 @@ export function EditUser() {
       });
       const response = await axiosIntercepted.post(URL, BODY);
       navigation.goBack()
-      console.log(response.data)
+
     } catch (err) {
-      console.log(err);
+
     }
   };
 

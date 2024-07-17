@@ -39,17 +39,17 @@ export function ChangePassword() {
     try {
       setTextError(false)
       const URL = AUTH_ENDPOINTS.CHANGE_PASSWORD;
-      console.log(URL);
+
       const BODY = JSON.stringify({
         password: password,
         confirmPassword: confirmPassword,
         userId: userId,
       });
       const response = await axiosBase.post(URL, BODY);
-      console.log(response.data);
+
       navigation.navigate('login');
     } catch (err) {
-      console.log(err);
+
     }
   };
   return (

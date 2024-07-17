@@ -38,6 +38,11 @@ import {
 import {BUSINESS_ENDPOINTS} from '../services/constants';
 import {axiosIntercepted} from '../services';
 import {useAuth} from '../context/AuthContext';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
 
 const nullFilter = {
   concept: '',
@@ -67,7 +72,7 @@ let Status = [
 
 export function TaskPage({route}) {
   const navigation = useNavigation();
-  const [data, setData] = useState([]);
+
   const [filterdData, setFilteredData] = useState({
     concept: '',
     location: '',
@@ -86,7 +91,7 @@ export function TaskPage({route}) {
   const [modalVisibleTo, setModalVisibleTo] = useState(false);
   const [pageNo, setPageNo] = useState(0);
   const [row, setRow] = useState(5);
-  const [paging,setPaging] = useState(true)
+  const [paging, setPaging] = useState(true);
   const {auth} = useAuth();
 
   const downloadFiles = async (base64Data, fileName) => {
@@ -115,7 +120,7 @@ export function TaskPage({route}) {
 
     try {
       RNFetchBlob.fs.writeFile(filePath, excelBuffer, 'base64');
-      console.log('File saved successfully:', filePath);
+
       if (Platform.OS == 'android') {
         ToastAndroid.show('File saved successfully', ToastAndroid.SHORT);
       }
@@ -124,11 +129,6 @@ export function TaskPage({route}) {
     }
   };
 
-  const callNextPage = () => {
-    if(paging){
-    GetAllTask(true);
-    }
-  };
   const downloadFile = async () => {
     try {
       setLoader(true);
@@ -149,9 +149,7 @@ export function TaskPage({route}) {
 
       downloadFiles(response.data, 'excelreport.xlsx');
       setLoader(false);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   useFocusEffect(
@@ -203,29 +201,61 @@ export function TaskPage({route}) {
   const renderItem = data => {
     const res = data.item;
     return (
-      <View style={styles.view}>
-        <BoxView
-          disableEdit={res.status == 'COMPLETED' ? true : false}
-          navig={() => navigation.navigate('viewTask', {task: res})}
-          Header={res.concept}
-          Subheader={res.maintenanceWork}
-          status={res.status}
-          Date={res.approvedQuotationDate}
-          Place={res.location}
-          Function={() =>
-            auth.role == 'CLIENT'
-              ? navigation.navigate('editTaskClient', {task: res})
-              : navigation.navigate('editTask', {task: res})
-          }
-        />
+      <View style={styles.container}>
+        {res.map(item => (
+          // <View key={item.id}>
+          <View key={item.id} style={styles.view} >
+            <BoxView
+              disableEdit={item.status === 'COMPLETED'}
+              navig={() => navigation.navigate('viewTask', { task: item })}
+              Header={item.concept}
+              Subheader={item.maintenanceWork}
+              status={item.status}
+              Date={item.approvedQuotationDate}
+              Place={item.location}
+              Function={() =>
+                auth.role === 'CLIENT'
+                  ? navigation.navigate('editTaskClient', { task: item })
+                  : navigation.navigate('editTask', { task: item })
+              }
+            />
+          </View>
+        ))}
       </View>
     );
   };
+  const callNextPage = () => {
+    //  setPageNo(prev=>prev+1)
+    // if (hasNextPage) {
+    fetchNextPage();
+    // }
+  };
 
-  const GetAllTask = async (paging = false) => {
+  const {
+    data, // InfiniteQueryData<Page>
+    error, // Error
+    fetchNextPage,
+    hasNextPage, // boolean
+    isError,
+    isFetching, // boolean
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['AllTask'],
+    queryFn: GetAllTask,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => {
+      // const nextPage = pages.length; // Example: Incrementing page number
+      // if (nextPage * rowsPerPage < total) {
+      //   return nextPage;
+      // }
+      return undefined;
+    },
+  });
+
+  async function GetAllTask({pageParam}) {
     try {
-      const pageno = !paging ? 0 : pageNo + 1;
-      setLoader(true);
+      // const pageno = !paging ? 0 : pageNo + 1
+      console.log(pageParam, 'pageparam');
       const URL = BUSINESS_ENDPOINTS.GETALLTASK;
 
       const BODY = JSON.stringify({
@@ -238,24 +268,26 @@ export function TaskPage({route}) {
         toDate: filterdData.toDate == 'To' ? '0001-01-01' : filterdData.toDate,
         fromDate:
           filterdData.fromDate == 'From' ? '0001-01-01' : filterdData.fromDate,
-        pageNumber: pageno,
+        pageNumber: pageParam,
         rowsPerPage: row,
       });
       const response = await axiosIntercepted.post(URL, BODY);
       const result = response.data;
-      setPageNo(pageno)
-      if(result.length<row){
-        setPaging(false)
-      }else{
-        setPaging(true)
+      return result;
+
+      if (result.length < row) {
+        setPaging(false);
+      } else {
+        setPaging(true);
       }
       setData(data.concat(result));
       setLoader(false);
+
+      return response;
     } catch (err) {
       setLoader(false);
-      console.log(err);
     }
-  };
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -277,7 +309,7 @@ export function TaskPage({route}) {
       <FlatList
         onEndReached={callNextPage}
         style={{backgroundColor: '#F2F4FF'}}
-        data={data}
+        data={data?.pages?.map(page => page?.map(item => item).flat())}
         renderItem={renderItem}
       />
 

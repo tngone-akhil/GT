@@ -133,7 +133,7 @@ export function HomePage() {
       // generalHelpers.storeToken(results.userId);
       // NEW_USER.isHeadQuarters = results.isHeadQuarters;
     } catch (err) {
-      console.log(err);
+
     } finally {
       // setRefreshing(false);
     }

@@ -17,6 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 import {AUTH_ENDPOINTS} from '../services/constants';
 import {axiosIntercepted} from '../services';
 import {validPhone, validateEmail} from '../utlis/helpers';
+import {QueryClient, useMutation, useQueryClient} from '@tanstack/react-query';
 
 const roles = [
   {label: 'Admin', value: 'ADMIN'},
@@ -72,10 +73,18 @@ export function AddUser() {
       saveUser();
     }
   };
+  const queryClient = useQueryClient();
+  // const {mutate}   = useMutation(saveUser);
+
+  const mutation = useMutation({
+    mutationFn: () => saveUser(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['userList']});
+    },
+  });
 
   const saveUser = async () => {
     setSubmit(true);
-
     if (!validateEmail(user.email)) {
       setEmailValid(true);
     } else {
@@ -93,13 +102,11 @@ export function AddUser() {
         setLoader(false);
         setSubmit(false);
         navigation.navigate('User');
-      } catch (err) {
-        console.log(err);
-      }
+        return response;
+      } catch (err) {}
     }
   };
 
-  console.log(emailValid);
   return (
     <SafeAreaView style={style.Container}>
       {loader && <Loader />}
@@ -212,7 +219,7 @@ export function AddUser() {
             }}
           />
           <ButtonComponent
-            onPresscomponent={validation}
+            onPresscomponent={() => mutation.mutate()}
             buttonStyle={stylesall.button}
             textStyle={stylesall.textLogin}
             title={'Submit'}

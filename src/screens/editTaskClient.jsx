@@ -55,7 +55,7 @@ export function EditTaskScreenClient() {
       setLoader(false);
       navigation.goBack();
     } catch (err) {
-      console.log(err);
+
       setLoader(false);
     }
   };

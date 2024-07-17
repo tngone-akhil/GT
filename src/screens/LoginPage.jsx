@@ -72,7 +72,7 @@ export function LoginPage() {
       });
       setLoader(false)
     } catch (err) {
-      console.log(err);
+
    
     } finally {
     

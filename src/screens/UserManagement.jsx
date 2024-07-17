@@ -13,23 +13,26 @@ import {Loader, UserBox} from '../shared/CommonComponent';
 import {BUSINESS_ENDPOINTS} from '../services/constants';
 import {axiosBase, axiosIntercepted} from '../services';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useInfiniteQuery} from '@tanstack/react-query';
 
 export function UserManagement() {
   const navigation = useNavigation();
   const [users, setUsers] = useState([]);
+  const [total, setTotal] = useState(0);
   const [pageNumber, setPageNumber] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(7);
+
   const [loading, setLoading] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      const getUsers = async () => {
-        await userList(true);
-      };
-      getUsers();
-      return () => {};
-    }, []),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const getUsers = async () => {
+  //       await userList(true);
+  //     };
+  //     getUsers();
+  //     return () => {};
+  //   }, []),
+  // );
 
   const deleteUser = async id => {
     try {
@@ -37,32 +40,58 @@ export function UserManagement() {
       setUsers(user);
       const URL = BUSINESS_ENDPOINTS.DELETE_USER + `/${id}`;
       await axiosIntercepted(URL);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
+  const {
+    data,
+    error,
+    fetchPreviousPage,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ['userList'],
+    queryFn: userList,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => {
+      const nextPage = pages.length; // Example: Incrementing page number
+      if (nextPage * rowsPerPage < total) {
+        return nextPage;
+      }
+      return undefined;
+    },
+  });
   const refreshPage = () => {
-    setPageNumber(pageNumber + 1);
-    userList(false);
+    // setPageNumber(pageNumber + 1);
+    // userList(false);
+    fetchNextPage();
   };
 
-  const userList = async (isLoad = true) => {
+  async function userList({pageParam}) {
     try {
-      const pageNo = isLoad ? pageNumber : pageNumber + 1;
-      setPageNumber(pageNo);
-      setLoading(true);
+      setPageNumber(pageParam);
+      // setLoading(true);
       const URL = BUSINESS_ENDPOINTS.GETALLUSER;
       const BODY = JSON.stringify({
-        pageNumber: pageNo,
+        pageNumber: pageParam,
+
         rowsPerPage: rowsPerPage,
       });
+
       const response = await axiosIntercepted.post(URL, BODY);
-      setUsers(users.concat(response.data.users));
-      setLoading(false);
+
+      setTotal(response.data.total);
+      return response.data;
     } catch (err) {
       console.log(err);
     }
+  }
+  const handleRefresh = async () => {
+    await refetch({pageParam: 0});
   };
 
   const renderItem = item => {
@@ -99,9 +128,12 @@ export function UserManagement() {
       </View>
 
       <FlatList
-        data={users}
+        data={data?.pages?.map(page => page?.users?.map(item => item)).flat()}
         renderItem={renderItem}
         onEndReached={refreshPage}
+        onEndReachedThreshold={0.3}
+        refreshing={isFetching}
+        onRefresh={handleRefresh}
       />
     </SafeAreaView>
   );

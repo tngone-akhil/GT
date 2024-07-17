@@ -13,7 +13,6 @@ const useAxiosPrivate = () => {
         if (!config.headers['AUTHKEY']) {
           config.headers['AUTHKEY'] = `${auth?.refreshToken}`;
         }
-       console.log(config)
         return config;
       },
       // eslint-disable-next-line no-undef
@@ -24,7 +23,7 @@ const useAxiosPrivate = () => {
       response => response,
       async error => {
         const prevRequest = error?.config;
-        console.log(prevRequest,error?.response?.status,"token")
+
         if (
           [401, 412].includes(error?.response?.status) &&
           !prevRequest?.sent

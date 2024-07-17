@@ -30,7 +30,7 @@ export function NotificationPage() {
       setRefresh(false);
     } catch (err) {
       setRefresh(false);
-      console.log(err);
+
     }
   };
   return (

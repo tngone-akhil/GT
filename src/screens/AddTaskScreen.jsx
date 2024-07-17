@@ -78,7 +78,7 @@ export function AddTaskScreen() {
       const response = await axiosIntercepted.post(URL, BODY);
       navigation.goBack();
     } catch (err) {
-      console.log(err);
+
     }
   };
 

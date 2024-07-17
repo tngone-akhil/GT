@@ -18,7 +18,7 @@ export function ViewTaskPage() {
   const [details, setDetails] = useState();
   const route = useRoute();
   const {task} = route.params;
-  console.log(task)
+
 
   return (
     <SafeAreaView style={style.Container}>
